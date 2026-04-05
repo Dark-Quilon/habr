@@ -1,5 +1,4 @@
 services:
-  # Бэкенд (Django)
   - type: web
     name: habr-backend
     env: docker
@@ -22,7 +21,6 @@ services:
       mountPath: /app/data
       sizeGB: 1
 
-  # Фронтенд (Preact)
   - type: web
     name: habr-frontend
     env: docker
@@ -30,8 +28,4 @@ services:
     dockerContext: ./frontend
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: habr-backend
-          type: web
-          property: host
-          envVarKey: BACKEND_HOST
+        value: "PLACEHOLDER"
