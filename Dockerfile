@@ -20,4 +20,6 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD ["gunicorn", "mysite.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2"]
+# Автоматическая миграция и создание админа при запуске
+ENV DJANGO_SUPERUSER_PASSWORD=admin123
+CMD sh -c "python manage.py migrate && python manage.py createsuperuser --noinput --username admin --email admin@example.com 2>/dev/null || true && gunicorn mysite.wsgi:application --bind 0.0.0.0:8000 --workers 2"
