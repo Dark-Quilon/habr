@@ -15,7 +15,8 @@ import type {
   MarkReadResponse,
 } from './types'
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api/v1'
+// Если переменная окружения пуста, используем точную ссылку на ваш бэкенд
+const API_BASE = import.meta.env.VITE_API_URL || 'https://habr-backend.onrender.com/api/v1'
 
 function getToken(): string | null {
   return localStorage.getItem('token')
