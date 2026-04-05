@@ -1,4 +1,5 @@
-# Технологический стек проекта Habr Blog
+Home.tsx:46 Failed to load articles: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+g	@	Home.tsx:46# Технологический стек проекта Habr Blog
 
 ## 📦 BACKEND (Python/Django)
 

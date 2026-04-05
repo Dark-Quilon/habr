@@ -19,7 +19,10 @@
       "Bash(where.exe *)",
       "Bash(rmdir *)",
       "Bash(ren *)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push)"
     ]
   },
   "$version": 3

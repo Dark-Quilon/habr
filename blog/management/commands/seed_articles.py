@@ -389,14 +389,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self.stdout.write('Очищаю базу данных...')
-        Vote.objects.all().delete()
-        Comment.objects.all().delete()
-        Notification.objects.all().delete()
-        Follow.objects.all().delete()
-        Article.objects.all().delete()
-        Tag.objects.all().delete()
-        Profile.objects.all().delete()
-        User.objects.filter(is_superuser=False).delete()
+        try:
+            Vote.objects.all().delete()
+            Comment.objects.all().delete()
+            Notification.objects.all().delete()
+            Follow.objects.all().delete()
+            Article.objects.all().delete()
+            Tag.objects.all().delete()
+            Profile.objects.all().delete()
+            User.objects.filter(is_superuser=False).delete()
+        except Exception as e:
+            self.stdout.write(f'База данных пуста или ошибка очистки: {e}')
 
         # Создать теги
         tags = {}
