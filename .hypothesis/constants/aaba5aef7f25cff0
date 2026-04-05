@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\contrib\admin\helpers.py
+# hypothesis_version: 6.151.10
+
+['#%s', ', ', '<a href="{}">{}</a>', '<lambda>', 'Action:', 'Remove', '__html__', '__iter__', '_selected_action', 'action-select', 'addText', 'admin/js/collapse.js', 'admin:%s_%s_change', 'boolean', 'class', 'collapse', 'deleteText', 'dependencies', 'field', 'fk', 'help_text', 'inline', 'is_hidden', 'label', 'name', 'options', 'prefix', 'read_only', 'required', 'select-across', 'vCheckboxLabel', 'verbose_name', 'widget']

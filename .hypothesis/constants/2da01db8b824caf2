@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\middleware\common.py
+# hypothesis_version: 6.151.10
+
+[404, '%s/', '/', '<none>', '?', 'Broken %slink on %s', 'Content-Length', 'Forbidden user agent', 'HTTP_REFERER', 'HTTP_USER_AGENT', 'INTERNAL ', 'PATCH', 'POST', 'PUT', 'REMOTE_ADDR', '^https?://%s/', 'method', 'should_append_slash', 'url', 'urlconf', 'www.']

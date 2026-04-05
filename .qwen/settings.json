@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker-compose *)",
+      "Bash(docker compose up *)",
+      "Bash(python *)",
+      "Bash(py *)",
+      "Bash(\"c:\\program files\\docker\\docker\\resources\\bin\\docker.exe\" *)",
+      "Bash(cmd *)",
+      "Bash(powershell *)",
+      "Bash(docker compose logs *)",
+      "Bash(npm run *)",
+      "Bash(docker ps)",
+      "Bash(python3 *)",
+      "Bash(docker *)",
+      "Bash(copy *)",
+      "Bash(del *)",
+      "Bash(dir *)",
+      "Bash(where.exe *)",
+      "Bash(rmdir *)",
+      "Bash(ren *)",
+      "Bash(curl *)"
+    ]
+  },
+  "$version": 3
+}

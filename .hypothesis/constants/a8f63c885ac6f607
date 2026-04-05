@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\markdown\extensions\fenced_code.py
+# hypothesis_version: 6.151.10
+
+['"', '&', '&amp;', '&gt;', '&lt;', '&quot;', '.', '<', '>', 'attrs', 'code', 'css_class', 'default', 'fenced_code_block', 'guess_lang', 'hl_lines', 'id', 'lang', 'lang_prefix', 'language-', 'linenums', 'noclasses', 'pygments_style', 'use_pygments', '{} {}']

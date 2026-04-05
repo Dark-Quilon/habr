@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\contrib\staticfiles\storage.py
+# hypothesis_version: 6.151.10
+
+['#', '%s%s%s', '*.css', '*.js', '.%s', '/', '1.0', '1.1', '?', '?#', 'All', '\\', '^[a-z]+:', 'dry_run', 'hash', 'import"%(url)s";', 'import("%(url)s")', 'matched', 'paths', 'seek', 'staticfiles.json', 'url', 'url("%(url)s")', 'utf-8', 'version']

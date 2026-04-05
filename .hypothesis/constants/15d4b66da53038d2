@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\template\loader_tags.py
+# hypothesis_version: 6.151.10
+
+['"', "'", '\'"', '../', './', '/', '<%s: extends %s>', '__include_context', 'block', 'block_context', 'context', 'endblock', 'endblock %s', 'extends', 'extends_context', 'include', 'only', 'render', 'template', 'with']

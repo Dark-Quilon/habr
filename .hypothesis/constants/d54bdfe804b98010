@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\core\files\storage\memory.py
+# hypothesis_version: 6.151.10
+
+['/', 'InMemoryStorage', '\\', 'b', 'rb', 'temporary_file_path', 'w', 'wb', 'wt']

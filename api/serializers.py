@@ -1,0 +1,132 @@
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from blog.models import Profile, Tag, Article, Comment, Follow, Notification
+
+
+# 2.1
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+        read_only_fields = ['id', 'username']
+
+
+# 2.2
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'name', 'slug']
+
+
+# 2.6 — объявляем до ArticleDetailSerializer, который его использует
+class CommentSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'author', 'content', 'created_at']
+
+
+# 2.3
+class ArticleListSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    rating = serializers.SerializerMethodField()
+
+    def get_rating(self, obj):
+        return obj.rating()
+
+    class Meta:
+        model = Article
+        fields = ['id', 'slug', 'title', 'author', 'tags', 'status', 'views', 'rating', 'created_at']
+
+
+# 2.4
+class ArticleDetailSerializer(ArticleListSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
+
+    class Meta(ArticleListSerializer.Meta):
+        fields = ArticleListSerializer.Meta.fields + ['content', 'comments', 'updated_at']
+
+
+# 2.5
+class ArticleWriteSerializer(serializers.ModelSerializer):
+    tags = serializers.ListField(child=serializers.CharField(), write_only=True, required=False, default=list)
+
+    class Meta:
+        model = Article
+        fields = ['title', 'content', 'status', 'tags']
+
+    def _set_tags(self, article, tag_names):
+        tag_objects = []
+        for name in tag_names:
+            tag, _ = Tag.objects.get_or_create(name=name)
+            tag_objects.append(tag)
+        article.tags.set(tag_objects)
+
+    def create(self, validated_data):
+        tag_names = validated_data.pop('tags', [])
+        article = Article.objects.create(**validated_data)
+        self._set_tags(article, tag_names)
+        return article
+
+    def update(self, instance, validated_data):
+        tag_names = validated_data.pop('tags', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if tag_names is not None:
+            self._set_tags(instance, tag_names)
+        return instance
+
+
+# 2.7
+class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    followers_count = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
+
+    def get_followers_count(self, obj):
+        return Follow.objects.filter(author=obj.user).count()
+
+    def get_is_following(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return Follow.objects.filter(follower=request.user, author=obj.user).exists()
+        return False
+
+    class Meta:
+        model = Profile
+        fields = ['user', 'avatar', 'bio', 'followers_count', 'is_following']
+
+
+# 2.8
+class NotificationSerializer(serializers.ModelSerializer):
+    actor = UserSerializer(read_only=True)
+    article = ArticleListSerializer(read_only=True)
+
+    class Meta:
+        model = Notification
+        fields = ['id', 'actor', 'article', 'is_read', 'created_at']
+
+
+# 2.9
+class RegisterSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password1 = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError('Пользователь с таким именем уже существует.')
+        return value
+
+    def validate(self, data):
+        if data['password1'] != data['password2']:
+            raise serializers.ValidationError({'password2': 'Пароли не совпадают.'})
+        return data
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)

@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+{% block title %}Лента{% endblock %}
+{% block content %}
+<h1>Лента подписок</h1>
+{% for article in page_obj %}
+<div>
+    <h2><a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a></h2>
+    <p>{{ article.author.username }} | {{ article.created_at|date:"d.m.Y" }}</p>
+</div>
+{% empty %}
+<p>Подпишитесь на авторов чтобы видеть их статьи здесь.</p>
+{% endfor %}
+
+{% if page_obj.has_previous or page_obj.has_next %}
+<div>
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+    {% endif %}
+    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

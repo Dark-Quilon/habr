@@ -1,0 +1,71 @@
+{% extends 'blog/base.html' %}
+{% load markdown_extras %}
+{% block title %}{{ article.title }}{% endblock %}
+{% block content %}
+<article>
+    <h1>{{ article.title }}</h1>
+    <p>
+        <a href="{% url 'profile' article.author.username %}">{{ article.author.username }}</a> |
+        {{ article.created_at|date:"d.m.Y" }} |
+        Просмотры: {{ article.views }} |
+        Рейтинг: {{ article.rating }}
+    </p>
+    {% if article.tags.all %}
+    <p>
+        Теги:
+        {% for tag in article.tags.all %}
+            <a href="/?tag={{ tag.slug }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+    <div>
+        {{ article.content|markdownify }}
+    </div>
+</article>
+
+{% if user.is_authenticated and user != article.author %}
+<form method="post" action="{% url 'vote' article.slug %}">
+    {% csrf_token %}
+    <button name="value" value="1">👍</button>
+    <button name="value" value="-1">👎</button>
+</form>
+{% endif %}
+
+{% if user == article.author %}
+<p>
+    <a href="{% url 'article_edit' article.slug %}">Редактировать</a> |
+    <a href="{% url 'article_delete' article.slug %}">Удалить</a>
+</p>
+{% endif %}
+
+<hr>
+<h3>Комментарии ({{ article.comments.count }})</h3>
+{% for comment in article.comments.all %}
+<div>
+    <strong>
+        <a href="{% url 'profile' comment.author.username %}">{{ comment.author.username }}</a>
+    </strong> — {{ comment.created_at|date:"d.m.Y H:i" }}
+    <p>{{ comment.content }}</p>
+    {% if user == comment.author %}
+    <form method="post" action="{% url 'comment_delete' comment.pk %}">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+    </form>
+    {% endif %}
+</div>
+{% empty %}
+<p>Комментариев пока нет.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+<h4>Добавить комментарий</h4>
+<form method="post" action="{% url 'comment_add' article.slug %}">
+    {% csrf_token %}
+    <textarea name="content" rows="3" placeholder="Ваш комментарий..." required></textarea>
+    <br>
+    <button type="submit">Отправить</button>
+</form>
+{% else %}
+<p><a href="{% url 'login' %}">Войдите</a> чтобы оставить комментарий.</p>
+{% endif %}
+{% endblock %}

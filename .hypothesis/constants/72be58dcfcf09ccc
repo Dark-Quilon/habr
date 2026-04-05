@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\Desktop\site\Habr\blog\urls.py
+# hypothesis_version: 6.151.10
+
+['article/<slug:slug>/', 'article/new/', 'article_create', 'article_delete', 'article_detail', 'article_edit', 'article_list', 'comment_add', 'comment_delete', 'feed', 'feed/', 'follow_toggle', 'my-articles/', 'my_articles', 'notifications', 'notifications/', 'profile', 'profile/edit/me/', 'profile_edit', 'register', 'register/', 'vote']

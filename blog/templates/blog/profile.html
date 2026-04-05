@@ -1,0 +1,32 @@
+{% extends 'blog/base.html' %}
+{% block title %}{{ author.username }}{% endblock %}
+{% block content %}
+<h1>{{ author.username }}</h1>
+{% if profile.avatar %}
+<img src="{{ profile.avatar.url }}" alt="аватар" width="100">
+{% endif %}
+<p>{{ profile.bio }}</p>
+<p>Подписчиков: {{ followers_count }}</p>
+
+{% if user.is_authenticated and user != author %}
+<form method="post" action="{% url 'follow_toggle' author.username %}">
+    {% csrf_token %}
+    <button type="submit">{% if is_following %}Отписаться{% else %}Подписаться{% endif %}</button>
+</form>
+{% endif %}
+
+{% if user == author %}
+<p><a href="{% url 'profile_edit' %}">Редактировать профиль</a></p>
+<p><a href="{% url 'my_articles' %}">Мои статьи</a></p>
+{% endif %}
+
+<h2>Статьи автора</h2>
+{% for article in articles %}
+<div>
+    <h3><a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a></h3>
+    <p>{{ article.created_at|date:"d.m.Y" }} | Просмотры: {{ article.views }}</p>
+</div>
+{% empty %}
+<p>Статей пока нет.</p>
+{% endfor %}
+{% endblock %}

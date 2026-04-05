@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\contrib\admin\actions.py
+# hypothesis_version: 6.151.10
+
+['Are you sure?', 'action_checkbox_name', 'count', 'deletable_objects', 'delete', 'items', 'media', 'model_count', 'name', 'objects_name', 'opts', 'perms_lacking', 'post', 'protected', 'queryset', 'subtitle', 'title']

@@ -1,0 +1,319 @@
+# Implementation Plan: Клон Хабра
+
+## Overview
+
+Реализация платформы для технических блогов на Django + Redis + SQLite/PostgreSQL, развёртываемой через Docker Compose. Порядок: сначала Docker-инфраструктура, затем Django-приложение поверх неё.
+
+## Tasks
+
+- [x] 1. Docker-инфраструктура: базовые файлы
+  - [x] 1.1 Создать `.gitignore`
+    - Исключить `.env`, `db.sqlite3`, `media/`, `staticfiles/`, `__pycache__/`, `*.pyc`, `.venv/`
+    - _Requirements: 3.4_
+  - [x] 1.2 Создать `.env.example` и `.env`
+    - Переменные: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `REDIS_URL`, `DATABASE_URL`
+    - `.env` содержит реальные значения для локальной разработки; `.env.example` — без секретов
+    - _Requirements: 3.1, 3.2_
+  - [x] 1.3 Создать `.dockerignore`
+    - Исключить `.venv`, `__pycache__`, `*.pyc`, `*.pyo`, `.git`, `.gitignore`, `db.sqlite3`, `media/`, `Plan/`
+    - _Requirements: 2.7_
+
+- [x] 2. Dockerfile и docker-compose.yml
+  - [x] 2.1 Создать `Dockerfile`
+    - Базовый образ `python:3.12-slim`; копировать `requirements.txt` первым (кэш слоя)
+    - `ENV PYTHONUNBUFFERED=1`; `RUN pip install -r requirements.txt`
+    - Копировать исходный код; выполнить `python manage.py collectstatic --noinput`
+    - `EXPOSE 8000`; CMD: `gunicorn mysite.wsgi:application --bind 0.0.0.0:8000 --workers 2`
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
+  - [x] 2.2 Создать `docker-compose.yml`
+    - Сервисы: `redis` (`redis:7-alpine`, maxmemory 256mb, allkeys-lru), `web` (build: .)
+    - `web` зависит от `redis`; монтировать тома `./media`, `./db.sqlite3`, `./staticfiles`
+    - `web.command`: `sh -c "python manage.py migrate && gunicorn ..."`
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 4.8_
+
+- [x] 3. Django-проект: инициализация и настройки
+  - [x] 3.1 Создать Django-проект `mysite` и приложение `blog`
+    - `django-admin startproject mysite .`; `python manage.py startapp blog`
+    - Создать `requirements.txt`: django, gunicorn, django-redis, python-slugify, markdown, Pillow, pytest-django, hypothesis, pytest-cov
+    - _Requirements: 1.6_
+  - [x] 3.2 Настроить `mysite/settings.py`
+    - Читать `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS` (split по запятой), `REDIS_URL` из `os.environ.get`
+    - Настроить `CACHES` с `django_redis`, `DJANGO_REDIS_IGNORE_EXCEPTIONS = True`
+    - Настроить `STATIC_ROOT = BASE_DIR / 'staticfiles'`, `MEDIA_ROOT`, `MEDIA_URL`
+    - Добавить `blog` в `INSTALLED_APPS`; настроить `LOGIN_REDIRECT_URL`, `LOGOUT_REDIRECT_URL`
+    - _Requirements: 1.7, 3.2, 3.3, 3.5, 4.8, 4.9, 15.2_
+  - [ ]* 3.3 Написать property-тест для чтения переменных окружения
+    - **Property 4: Переменные окружения читаются с безопасными значениями по умолчанию**
+    - **Validates: Requirements 3.2, 3.3**
+  - [ ]* 3.4 Написать property-тест для разбора ALLOWED_HOSTS
+    - **Property 5: Разбор ALLOWED_HOSTS по запятым**
+    - **Validates: Requirements 3.5**
+
+- [ ] 4. Модели данных
+  - [ ] 4.1 Реализовать модели в `blog/models.py`
+    - `Profile` (OneToOne User, avatar, bio); `Tag` (name, slug); `Article` (title, slug, author, content, tags, status, views, created_at, updated_at)
+    - `Comment` (article, author, content, created_at; ordering by created_at); `Vote` (article, user, value; unique_together); `Follow` (follower, author; unique_together); `Notification` (recipient, actor, article, is_read, created_at; ordering by -created_at)
+    - Метод `Article.rating()` → upvotes − downvotes
+    - Метод `Article.save()` → автогенерация уникального slug через `python-slugify` с суффиксом при коллизии
+    - Сигнал `post_save` на `User` → автосоздание `Profile`
+    - _Requirements: 6.1, 6.2, 9.4, 10.3, 10.4, 16.1, 16.2_
+  - [ ] 4.2 Создать и применить миграции
+    - `python manage.py makemigrations blog`; `python manage.py migrate`
+    - _Requirements: 6.1_
+  - [ ]* 4.3 Написать property-тест для генерации slug (допустимые символы)
+    - **Property 1: Slug содержит только допустимые символы**
+    - **Validates: Requirements 16.1**
+  - [ ]* 4.4 Написать property-тест для уникальности slug при коллизии
+    - **Property 2: Slug уникален при коллизии заголовков**
+    - **Validates: Requirements 6.2, 16.2**
+  - [ ]* 4.5 Написать property-тест для обратного преобразования slug → статья
+    - **Property 3: Обратное преобразование Slug → Статья**
+    - **Validates: Requirements 16.3**
+  - [ ]* 4.6 Написать unit-тесты для моделей
+    - Тест `Article.rating()` с разными наборами голосов; тест уникальности Vote; тест уникальности Follow
+    - _Requirements: 9.4_
+
+- [ ] 5. Checkpoint — убедиться, что миграции применяются и тесты моделей проходят
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 6. Аутентификация пользователей
+  - [ ] 6.1 Создать форму регистрации и view в `blog/views.py`
+    - `RegisterView`: форма на основе `UserCreationForm`; при успехе — login + redirect на список статей
+    - При ошибке — повторный рендер формы с ошибками по полям
+    - _Requirements: 5.1, 5.2_
+  - [ ] 6.2 Настроить URL для auth в `mysite/urls.py` и `blog/urls.py`
+    - Подключить `django.contrib.auth.urls` (login/logout); добавить URL регистрации
+    - _Requirements: 5.3, 5.4, 5.5, 5.6_
+  - [ ] 6.3 Создать шаблоны `registration/login.html` и форму регистрации
+    - Базовый шаблон `blog/base.html` с навигацией (ссылки login/logout/register, счётчик уведомлений)
+    - _Requirements: 5.3, 5.4, 12.3, 12.4_
+  - [ ]* 6.4 Написать property-тест для защиты от несанкционированного доступа
+    - **Property 10: Защита от несанкционированного доступа**
+    - **Validates: Requirements 5.6**
+  - [ ]* 6.5 Написать property-тест для регистрации (создание User + Profile)
+    - **Property 9: Регистрация создаёт пользователя и профиль**
+    - **Validates: Requirements 5.1, 10.3**
+  - [ ]* 6.6 Написать unit-тесты для auth
+    - Регистрация с существующим именем; вход с неверным паролем
+    - _Requirements: 5.2, 5.4_
+
+- [ ] 7. CRUD статей
+  - [ ] 7.1 Реализовать views для статей в `blog/views.py`
+    - `ArticleListView`: список опубликованных статей, 10 на страницу
+    - `ArticleDetailView`: детальная страница; увеличение `views` для не-авторов; рендер Markdown
+    - `ArticleCreateView` (`@login_required`): создание статьи, генерация slug, redirect на detail
+    - `ArticleUpdateView` (`@login_required`): редактирование только своей статьи (`get_object_or_404(..., author=request.user)`)
+    - `ArticleDeleteView` (`@login_required`): удаление только своей статьи
+    - _Requirements: 6.1, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8_
+  - [ ] 7.2 Создать `blog/forms.py` с `ArticleForm`
+    - Поля: title, content, tags (CharField для ввода через запятую), status
+    - _Requirements: 6.1, 7.1_
+  - [ ] 7.3 Создать шаблоны для статей
+    - `article_list.html`: карточки с заголовком, автором, датой, рейтингом, тегами, просмотрами
+    - `article_detail.html`: полная статья с комментариями, формой комментария, кнопками голосования
+    - `article_form.html`: форма создания/редактирования
+    - _Requirements: 6.3, 6.8, 9.6_
+  - [ ]* 7.4 Написать property-тест для владельца статьи
+    - **Property 11: Владелец статьи — единственный редактор**
+    - **Validates: Requirements 6.7**
+  - [ ]* 7.5 Написать property-тест для счётчика просмотров
+    - **Property 12: Счётчик просмотров увеличивается только для не-авторов**
+    - **Validates: Requirements 6.4**
+  - [ ]* 7.6 Написать unit-тесты для CRUD статей
+    - Создание черновика; просмотр черновика не-автором → 404; редактирование чужой статьи → 404
+    - _Requirements: 6.7_
+
+- [ ] 8. Теги
+  - [ ] 8.1 Реализовать логику тегов в `ArticleCreateView` и `ArticleUpdateView`
+    - Парсить строку тегов по запятой; `Tag.objects.get_or_create` для каждого; `article.tags.set(...)`
+    - _Requirements: 7.1_
+  - [ ] 8.2 Реализовать фильтрацию по тегу в `ArticleListView`
+    - GET-параметр `tag`; фильтровать `Article.objects.filter(tags__slug=tag_slug)`
+    - Отображать ссылки на теги в карточках и на странице детали
+    - _Requirements: 7.2, 7.3_
+  - [ ]* 8.3 Написать property-тест для парсинга тегов
+    - **Property 13: Теги корректно парсятся и связываются**
+    - **Validates: Requirements 7.1**
+  - [ ]* 8.4 Написать property-тест для фильтрации по тегу
+    - **Property 14: Фильтрация по тегу возвращает только статьи с этим тегом**
+    - **Validates: Requirements 7.2**
+
+- [ ] 9. Комментарии
+  - [ ] 9.1 Реализовать views для комментариев
+    - `CommentCreateView` (`@login_required`, POST к detail-странице): сохранить комментарий, redirect на detail
+    - `CommentDeleteView` (`@login_required`): удалить только свой комментарий (`get_object_or_404(..., author=request.user)`)
+    - _Requirements: 8.1, 8.3, 8.4, 8.5_
+  - [ ] 9.2 Добавить форму комментария в `blog/forms.py`
+    - `CommentForm` с полем `content`; валидация на непустоту
+    - _Requirements: 8.1, 8.5_
+  - [ ]* 9.3 Написать property-тест для порядка комментариев
+    - **Property 15: Комментарии отображаются в хронологическом порядке**
+    - **Validates: Requirements 8.2**
+  - [ ]* 9.4 Написать property-тест для владельца комментария
+    - **Property 16: Владелец комментария — единственный удалитель**
+    - **Validates: Requirements 8.4**
+  - [ ]* 9.5 Написать unit-тесты для комментариев
+    - Пустой комментарий не сохраняется; удаление чужого комментария → 404
+    - _Requirements: 8.4, 8.5_
+
+- [ ] 10. Голосование
+  - [ ] 10.1 Реализовать `VoteView` в `blog/views.py`
+    - `@login_required`; блокировать самоголосование (redirect без записи)
+    - Toggle: если Vote с тем же value существует — удалить; если с другим — обновить; иначе — создать
+    - Инвалидировать кэш `article:<slug>` после голосования
+    - _Requirements: 9.1, 9.2, 9.3, 9.5, 4.6_
+  - [ ]* 10.2 Написать property-тест для семантики голосования
+    - **Property 17: Голосование — полная семантика**
+    - **Validates: Requirements 9.1, 9.2, 9.3**
+  - [ ]* 10.3 Написать property-тест для рейтинга
+    - **Property 18: Рейтинг = upvotes − downvotes**
+    - **Validates: Requirements 9.4**
+  - [ ]* 10.4 Написать property-тест для самоголосования
+    - **Property 19: Автор не может голосовать за свою статью**
+    - **Validates: Requirements 9.5**
+  - [ ]* 10.5 Написать unit-тест: голосование автора за свою статью → нет записи Vote
+    - _Requirements: 9.5_
+
+- [ ] 11. Checkpoint — убедиться, что все тесты до этого момента проходят
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 12. Профили пользователей
+  - [ ] 12.1 Реализовать `ProfileView` и `ProfileEditView` в `blog/views.py`
+    - `ProfileView`: отображать аватар, биографию, список опубликованных статей пользователя, количество подписчиков
+    - `ProfileEditView` (`@login_required`): форма редактирования аватара и биографии; redirect на profile
+    - _Requirements: 10.1, 10.2, 10.4_
+  - [ ] 12.2 Создать `ProfileForm` в `blog/forms.py`
+    - Поля: `avatar` (ImageField), `bio`
+    - _Requirements: 10.2_
+  - [ ] 12.3 Создать шаблон `blog/profile.html`
+    - Аватар, биография, кнопка подписки/отписки, счётчик подписчиков, список статей
+    - _Requirements: 10.1, 11.4_
+
+- [ ] 13. Подписки и лента
+  - [ ] 13.1 Реализовать `FollowToggleView` в `blog/views.py`
+    - `@login_required`; блокировать самоподписку; toggle Follow; redirect на profile
+    - _Requirements: 11.1, 11.2, 11.3_
+  - [ ] 13.2 Реализовать `FeedView` в `blog/views.py`
+    - `@login_required`; статьи от авторов из `request.user.following.values_list('author')`
+    - Сортировка по `-created_at`; пагинация 10 на страницу
+    - _Requirements: 11.5_
+  - [ ] 13.3 Создать шаблон `blog/feed.html`
+    - _Requirements: 11.5_
+  - [ ]* 13.4 Написать property-тест для toggle подписки
+    - **Property 20: Подписка — toggle**
+    - **Validates: Requirements 11.1, 11.2, 11.3**
+  - [ ]* 13.5 Написать property-тест для ленты
+    - **Property 21: Лента содержит только статьи подписанных авторов**
+    - **Validates: Requirements 11.5**
+  - [ ]* 13.6 Написать unit-тест: самоподписка → нет записи Follow
+    - _Requirements: 11.3_
+
+- [ ] 14. Уведомления
+  - [ ] 14.1 Реализовать создание уведомлений в `CommentCreateView`
+    - После сохранения комментария: если `comment.author != article.author` → создать `Notification`
+    - _Requirements: 12.1_
+  - [ ] 14.2 Реализовать `NotificationListView` в `blog/views.py`
+    - `@login_required`; отобразить все уведомления пользователя; пометить все непрочитанные как `is_read=True`
+    - _Requirements: 12.2_
+  - [ ] 14.3 Создать `blog/context_processors.py`
+    - Функция `unread_notifications_count`: для аутентифицированного пользователя возвращает количество непрочитанных уведомлений
+    - Добавить в `TEMPLATES[0]['OPTIONS']['context_processors']` в settings.py
+    - _Requirements: 12.3, 12.4_
+  - [ ] 14.4 Создать шаблон `blog/notifications.html`
+    - _Requirements: 12.2_
+  - [ ]* 14.5 Написать property-тест для создания уведомления
+    - **Property 22: Уведомление создаётся при комментарии не-автора**
+    - **Validates: Requirements 12.1**
+  - [ ]* 14.6 Написать property-тест для пометки уведомлений прочитанными
+    - **Property 23: Просмотр уведомлений помечает их прочитанными**
+    - **Validates: Requirements 12.2, 12.3**
+  - [ ]* 14.7 Написать unit-тест: уведомление не создаётся, если автор комментирует свою статью
+    - _Requirements: 12.1_
+
+- [ ] 15. Поиск, сортировка, пагинация
+  - [ ] 15.1 Расширить `ArticleListView` поиском и сортировкой
+    - GET-параметр `q`: фильтровать по `title__icontains | content__icontains | tags__name__icontains`, `.distinct()`
+    - GET-параметр `sort`: `new` (по `-created_at`), `rating` (аннотация `upvotes-downvotes`), `popular` (по `-views`)
+    - Пагинация `Paginator(queryset, 10)`; передавать `q`, `tag`, `sort` в контекст для ссылок пагинации
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6_
+  - [ ] 15.2 Обновить шаблон `article_list.html`
+    - Форма поиска, кнопки сортировки, ссылки пагинации с сохранением параметров
+    - _Requirements: 13.6_
+  - [ ]* 15.3 Написать property-тест для поиска без дублей
+    - **Property 24: Поиск возвращает только совпадающие статьи без дублей**
+    - **Validates: Requirements 13.1**
+  - [ ]* 15.4 Написать property-тест для инварианта сортировки
+    - **Property 25: Инвариант сортировки**
+    - **Validates: Requirements 13.2, 13.3, 13.4**
+  - [ ]* 15.5 Написать property-тест для пагинации
+    - **Property 26: Пагинация — не более 10 статей на страницу**
+    - **Validates: Requirements 13.5**
+  - [ ]* 15.6 Написать property-тест для сохранения параметров в ссылках пагинации
+    - **Property 27: Параметры сохраняются в ссылках пагинации**
+    - **Validates: Requirements 13.6**
+  - [ ]* 15.7 Написать unit-тест: пустой поисковый запрос → возвращаются все статьи
+    - _Requirements: 13.1_
+
+- [ ] 16. Рендеринг Markdown
+  - [ ] 16.1 Создать `blog/templatetags/markdown_extras.py`
+    - Фильтр `markdownify`: `markdown.markdown(value, extensions=['fenced_code', 'tables'])`
+    - _Requirements: 14.1, 14.2_
+  - [ ] 16.2 Применить фильтр в `article_detail.html`
+    - `{{ article.content|markdownify }}`; убедиться, что в БД хранится исходный Markdown
+    - _Requirements: 14.1, 14.2_
+  - [ ]* 16.3 Написать property-тест для Markdown рендеринга
+    - **Property 28: Markdown рендерится в HTML, исходник хранится в БД**
+    - **Validates: Requirements 14.1, 14.2**
+
+- [ ] 17. Кэширование Redis
+  - [ ] 17.1 Добавить кэширование в `ArticleDetailView`
+    - При cache miss: получить из БД, `cache.set(f'article:{slug}', article, 300)`
+    - При cache hit: вернуть из кэша
+    - _Requirements: 4.1, 4.2_
+  - [ ] 17.2 Добавить кэширование в `ArticleListView`
+    - Ключ `article_list:{sort}:{tag}:{page}`; TTL 60 сек
+    - _Requirements: 4.3, 4.4_
+  - [ ] 17.3 Добавить инвалидацию кэша в мутирующие views
+    - `ArticleUpdateView`, `ArticleDeleteView`: инвалидировать `article:<slug>` и все ключи `article_list:*`
+    - `VoteView`: инвалидировать `article:<slug>`
+    - `CommentCreateView`, `CommentDeleteView`: инвалидировать `article:<slug>`
+    - _Requirements: 4.5, 4.6, 4.7_
+  - [ ]* 17.4 Написать property-тест для кэша статьи (round trip)
+    - **Property 6: Кэш статьи — round trip**
+    - **Validates: Requirements 4.1, 4.2**
+  - [ ]* 17.5 Написать property-тест для кэша списка статей (round trip)
+    - **Property 7: Кэш списка статей — round trip**
+    - **Validates: Requirements 4.3, 4.4**
+  - [ ]* 17.6 Написать property-тест для инвалидации кэша при мутации
+    - **Property 8: Инвалидация кэша при мутации статьи**
+    - **Validates: Requirements 4.5, 4.6, 4.7**
+  - [ ]* 17.7 Написать unit-тест: Redis недоступен → сервис отвечает без HTTP 500
+    - _Requirements: 1.7, 4.9_
+
+- [ ] 18. Статические файлы
+  - [ ] 18.1 Настроить `whitenoise` или убедиться, что Gunicorn отдаёт `staticfiles/`
+    - Добавить `whitenoise.middleware.WhiteNoiseMiddleware` в `MIDDLEWARE` (опционально)
+    - Убедиться, что `STATIC_ROOT = BASE_DIR / 'staticfiles'` задан в settings.py
+    - _Requirements: 15.1, 15.2, 15.3_
+  - [ ] 18.2 Добавить базовый CSS в `blog/static/blog/style.css`
+    - Минимальные стили для читаемости; подключить в `base.html`
+    - _Requirements: 15.1_
+
+- [ ] 19. Checkpoint — финальная проверка
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 20. Структура тестов и конфигурация pytest
+  - [ ] 20.1 Создать `pytest.ini` / `conftest.py`
+    - `DJANGO_SETTINGS_MODULE=mysite.settings`; фикстуры для создания пользователей, статей, тегов
+    - _Requirements: все_
+  - [ ]* 20.2 Написать структурные тесты Docker-файлов
+    - `tests/test_docker/test_dockerfile.py`: проверить наличие `FROM python:3.12-slim`, `EXPOSE 8000`, `collectstatic`
+    - `tests/test_docker/test_compose.py`: проверить наличие сервисов `web`, `redis`, зависимостей, томов
+    - _Requirements: 2.1–2.7, 1.1–1.6_
+
+## Notes
+
+- Задачи с `*` опциональны и могут быть пропущены для быстрого MVP
+- Каждая задача ссылается на конкретные требования для трассируемости
+- Property-тесты запускаются с `max_examples=100` и помечаются комментарием `# Feature: habr-clone, Property N: ...`
+- Checkpoints обеспечивают инкрементальную валидацию

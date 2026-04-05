@@ -1,0 +1,21 @@
+{% extends 'blog/base.html' %}
+{% block title %}Мои статьи{% endblock %}
+{% block content %}
+<h1>Мои статьи</h1>
+<p><a href="{% url 'article_create' %}">+ Написать статью</a></p>
+{% for article in articles %}
+<div>
+    <h2>
+        <a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a>
+        {% if article.status == 'draft' %}<em>(черновик)</em>{% endif %}
+    </h2>
+    <p>{{ article.created_at|date:"d.m.Y" }} | Просмотры: {{ article.views }}</p>
+    <p>
+        <a href="{% url 'article_edit' article.slug %}">Редактировать</a> |
+        <a href="{% url 'article_delete' article.slug %}">Удалить</a>
+    </p>
+</div>
+{% empty %}
+<p>У вас пока нет статей.</p>
+{% endfor %}
+{% endblock %}

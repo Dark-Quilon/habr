@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\Desktop\site\Habr\blog\views.py
+# hypothesis_version: 6.151.10
+
+['-created_at', '-rating_score', '-views', 'POST', 'action', 'actor', 'article', 'article_detail', 'article_list', 'articles', 'author', 'blog/feed.html', 'blog/profile.html', 'dispatch', 'followers_count', 'form', 'is_following', 'new', 'notifications', 'page', 'page_obj', 'popular', 'profile', 'q', 'query', 'rating', 'sort', 'tag', 'value', 'Редактировать', 'Создать']

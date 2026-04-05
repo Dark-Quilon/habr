@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\markdown\blockprocessors.py
+# hypothesis_version: 6.151.10
+
+[100, '\n%s', '%s\n', '(\\d+)', '1', '<', '=', '>', 'MARKDOWN', '^(([ ]{%s})+)', 'blockquote', 'code', 'detabbed', 'empty', 'h%d', 'hashheader', 'header', 'hr', 'indent', 'level', 'li', 'list', 'looselist', 'ol', 'olist', 'p', 'paragraph', 'pre', 'quote', 'reference', 'setextheader', 'start', 'ul', 'ulist', '{}\n{}', '{}\n{}\n', '{}{}']

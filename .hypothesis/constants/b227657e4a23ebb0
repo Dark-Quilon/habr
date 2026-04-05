@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\conf\locale\ru\formats.py
+# hypothesis_version: 6.151.10
+
+['%d.%m.%Y', '%d.%m.%Y %H:%M', '%d.%m.%Y %H:%M:%S', '%d.%m.%Y %H:%M:%S.%f', '%d.%m.%y', '%d.%m.%y %H:%M', '%d.%m.%y %H:%M:%S', '%d.%m.%y %H:%M:%S.%f', ',', 'F Y г.', 'G:i', 'd.m.Y', 'd.m.Y H:i', 'j E Y г.', 'j E Y г. G:i', 'j F']

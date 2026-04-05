@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\markdown\extensions\tables.py
+# hypothesis_version: 6.151.10
+
+['(?<!\\\\)(?:\\\\\\\\)*\\|$', ':', 'align', 'center', 'left', 'right', 'style', 'table', 'tbody', 'td', 'th', 'thead', 'tr', 'use_align_attribute', '|', '|:- ']

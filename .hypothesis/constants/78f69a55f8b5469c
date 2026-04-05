@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\Desktop\site\Habr\mysite\settings.py
+# hypothesis_version: 6.151.10
+
+[',', '/', '/accounts/login/', '/media/', '/static/', 'ALLOWED_HOSTS', 'APP_DIRS', 'BACKEND', 'CLIENT_CLASS', 'DEBUG', 'DIRS', 'ENGINE', 'LOCATION', 'NAME', 'OPTIONS', 'REDIS_URL', 'SECRET_KEY', 'SOCKET_TIMEOUT', 'True', 'UTC', 'blog', 'context_processors', 'db.sqlite3', 'default', 'django.contrib.admin', 'django.contrib.auth', 'localhost,127.0.0.1', 'media', 'mysite.urls', 'ru-ru', 'staticfiles']

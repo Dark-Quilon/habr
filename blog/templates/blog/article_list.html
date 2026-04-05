@@ -1,0 +1,51 @@
+{% extends 'blog/base.html' %}
+{% block title %}Статьи{% endblock %}
+{% block content %}
+<h1>Статьи</h1>
+
+<form method="get" action="/">
+    <input type="text" name="q" value="{{ query }}" placeholder="Поиск...">
+    <input type="hidden" name="sort" value="{{ sort }}">
+    {% if tag %}<input type="hidden" name="tag" value="{{ tag }}">{% endif %}
+    <button type="submit">Найти</button>
+</form>
+
+<p>
+    <a href="?sort=new&tag={{ tag }}&q={{ query }}">Новые</a> |
+    <a href="?sort=rating&tag={{ tag }}&q={{ query }}">По рейтингу</a> |
+    <a href="?sort=popular&tag={{ tag }}&q={{ query }}">Популярные</a>
+</p>
+
+{% for article in articles %}
+<div>
+    <h2><a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a></h2>
+    <p>
+        <a href="{% url 'profile' article.author.username %}">{{ article.author.username }}</a> |
+        {{ article.created_at|date:"d.m.Y" }} |
+        Просмотры: {{ article.views }} |
+        Рейтинг: {{ article.rating }}
+    </p>
+    {% if article.tags.all %}
+    <p>
+        {% for tag_obj in article.tags.all %}
+        <a href="?tag={{ tag_obj.slug }}&sort={{ sort }}">{{ tag_obj.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+</div>
+{% empty %}
+<p>Статей не найдено.</p>
+{% endfor %}
+
+{% if is_paginated %}
+<div>
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}&sort={{ sort }}&tag={{ tag }}&q={{ query }}">← Назад</a>
+    {% endif %}
+    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}&sort={{ sort }}&tag={{ tag }}&q={{ query }}">Вперёд →</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

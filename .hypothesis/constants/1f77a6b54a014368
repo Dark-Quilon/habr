@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\db\models\functions\window.py
+# hypothesis_version: 6.151.10
+
+['CUME_DIST', 'CumeDist', 'DENSE_RANK', 'DenseRank', 'FIRST_VALUE', 'FirstValue', 'LAG', 'LAST_VALUE', 'LEAD', 'Lag', 'LastValue', 'Lead', 'NTH_VALUE', 'NTILE', 'NthValue', 'Ntile', 'PERCENT_RANK', 'PercentRank', 'RANK', 'ROW_NUMBER', 'Rank', 'RowNumber']

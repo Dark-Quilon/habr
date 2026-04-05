@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\core\cache\backends\base.py
+# hypothesis_version: 6.151.10
+
+[127, 250, 300, '%s:%s:%s', 'CULL_FREQUENCY', 'KEY_FUNCTION', 'KEY_PREFIX', "Key '%s' not found", 'MAX_ENTRIES', 'OPTIONS', 'TIMEOUT', 'VERSION', 'cull_frequency', 'max_entries', 'timeout']

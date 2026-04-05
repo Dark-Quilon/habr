@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\sqlparse\engine\grouping.py
+# hypothesis_version: 6.151.10
+
+[100, 10000, ',', '->', '->>', '.', '::', ':=', ';', 'AS', 'CREATE', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'NULL', 'TABLE', 'VALUES', 'null', 'role']

@@ -1,0 +1,16 @@
+{% extends 'blog/base.html' %}
+{% block title %}Уведомления{% endblock %}
+{% block content %}
+<h1>Уведомления</h1>
+{% for notif in notifications %}
+<div>
+    <p>
+        <strong>{{ notif.actor.username }}</strong> прокомментировал вашу статью
+        <a href="{% url 'article_detail' notif.article.slug %}">{{ notif.article.title }}</a>
+        — {{ notif.created_at|date:"d.m.Y H:i" }}
+    </p>
+</div>
+{% empty %}
+<p>Уведомлений нет.</p>
+{% endfor %}
+{% endblock %}

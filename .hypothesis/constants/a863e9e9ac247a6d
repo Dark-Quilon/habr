@@ -1,0 +1,4 @@
+# file: C:\Users\Yar\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\django\db\models\fields\related_descriptors.py
+# hypothesis_version: 6.151.10
+
+['%s has no %s.', '%s.%s', '%s__%s', '%s__in', '%s_id', '__module__', '__qualname__', 'forward', 'post_add', 'post_clear', 'post_remove', 'pre_add', 'pre_clear', 'pre_remove', 'reverse']

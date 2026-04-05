@@ -1,0 +1,39 @@
+stages:
+  - build
+
+variables:
+  REGISTRY: gitlab.localhost:5050
+  BACKEND_IMAGE: $REGISTRY/root/blog-backend
+  FRONTEND_IMAGE: $REGISTRY/root/blog-frontend
+  DOCKER_HOST: unix:///var/run/docker.sock
+  DOCKER_TLS_CERTDIR: ""
+
+build-backend:
+  stage: build
+  image: docker:latest
+  services: []
+  before_script:
+    - docker info
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  script:
+    - docker build -t $BACKEND_IMAGE:latest -t $BACKEND_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $BACKEND_IMAGE:latest
+    - docker push $BACKEND_IMAGE:$CI_COMMIT_SHORT_SHA
+  only:
+    - main
+    - master
+
+build-frontend:
+  stage: build
+  image: docker:latest
+  services: []
+  before_script:
+    - docker info
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  script:
+    - docker build -t $FRONTEND_IMAGE:latest -t $FRONTEND_IMAGE:$CI_COMMIT_SHORT_SHA frontend
+    - docker push $FRONTEND_IMAGE:latest
+    - docker push $FRONTEND_IMAGE:$CI_COMMIT_SHORT_SHA
+  only:
+    - main
+    - master

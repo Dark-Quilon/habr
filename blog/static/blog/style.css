@@ -1,0 +1,4 @@
+body { font-family: sans-serif; max-width: 900px; margin: 0 auto; padding: 1rem; }
+nav { margin-bottom: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #ccc; }
+nav a { margin-right: 0.5rem; }
+h1, h2 { color: #333; }
