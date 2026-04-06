@@ -422,7 +422,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('✓ Админ: admin / admin123'))
 
         # Создать пользователей (10-15)
-        num_users = random.randint(10, 15)
+        num_users = min(random.randint(10, 15), len(USERNAMES))
         selected_usernames = random.sample(USERNAMES, num_users)
         users = []
         for username in selected_usernames:
