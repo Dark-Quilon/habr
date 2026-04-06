@@ -442,29 +442,73 @@ class Command(BaseCommand):
             for author in to_follow:
                 Follow.objects.get_or_create(follower=user, author=author)
 
-        # Создать статьи (5-25 на пользователя, итого 50-250)
+        # Фиксированный список статей с предсказуемыми slug'ами
+        FIXED_ARTICLES = [
+            # (title, slug, topic, template_index, views)
+            ("10 лучших практик Django — часть 24", "10-luchshikh-praktik-django-chast-24", "Django", 6, 250),
+            ("Введение в Python", "vvedenie-v-python", "Python", 0, 500),
+            ("Django для продакшена", "django-dlia-prodakshena", "Django", 1, 350),
+            ("Оптимизация Docker: советы и трюки", "optimizatsiia-docker-sovety-i-triuki", "Docker", 2, 420),
+            ("Тестирование React с pytest", "testirovanie-react-s-pytest", "React", 3, 180),
+            ("FastAPI vs альтернативы: что выбрать?", "fastapi-vs-alternativy-chto-vybrat", "FastAPI", 4, 310),
+            ("Мой опыт работы с PostgreSQL", "moi-opyt-raboty-s-postgresql", "PostgreSQL", 5, 275),
+            ("Как я перешёл на Kubernetes и не жалею", "kak-ia-pereshel-na-kubernetes-i-ne-zhaleiu", "Kubernetes", 7, 190),
+            ("Введение в Redis", "vvedenie-v-redis", "Redis", 0, 340),
+            ("Nginx для продакшена", "nginx-dlia-prodakshena", "Nginx", 1, 280),
+            ("Оптимизация Linux: советы и трюки", "optimizatsiia-linux-sovety-i-triuki", "Linux", 2, 450),
+            ("Тестирование Git с pytest", "testirovanie-git-s-pytest", "Git", 3, 160),
+            ("JavaScript vs TypeScript: что выбрать?", "javascript-vs-typescript-chto-vybrat", "TypeScript", 4, 520),
+            ("Мой опыт работы с Vue.js", "moi-opyt-raboty-s-vue-js", "Vue.js", 5, 230),
+            ("Как я перешёл на MongoDB и не жалею", "kak-ia-pereshel-na-mongodb-i-ne-zhaleiu", "MongoDB", 7, 310),
+            ("10 лучших практик CI/CD", "10-luchshikh-praktik-ci-cd", "CI/CD", 6, 380),
+            ("Введение в GraphQL", "vvedenie-v-graphql", "GraphQL", 0, 290),
+            ("RabbitMQ для продакшена", "rabbitmq-dlia-prodakshena", "RabbitMQ", 1, 200),
+            ("Оптимизация Celery: советы и трюки", "optimizatsiia-celery-sovety-i-triuki", "Celery", 2, 170),
+            ("Тестирование Elasticsearch с pytest", "testirovanie-elasticsearch-s-pytest", "Elasticsearch", 3, 140),
+            ("Terraform vs альтернативы: что выбрать?", "terraform-vs-alternativy-chto-vybrat", "Terraform", 4, 260),
+            ("Мой опыт работы с Node.js", "moi-opyt-raboty-s-node-js", "Node.js", 5, 330),
+            ("Как я перешёл на Webpack и не жалею", "kak-ia-pereshel-na-webpack-i-ne-zhaleiu", "Webpack", 7, 150),
+            ("Введение в REST API", "vvedenie-v-rest-api", "REST API", 0, 410),
+            ("Microservices для продакшена", "microservices-dlia-prodakshena", "Microservices", 1, 370),
+            ("Оптимизация JavaScript: советы и трюки", "optimizatsiia-javascript-sovety-i-triuki", "JavaScript", 2, 480),
+            ("Тестирование Docker с pytest", "testirovanie-docker-s-pytest", "Docker", 3, 220),
+            ("Python vs альтернативы: что выбрать?", "python-vs-alternativy-chto-vybrat", "Python", 4, 390),
+            ("Мой опыт работы с DevOps", "moi-opyt-raboty-s-devops", "DevOps", 5, 260),
+            ("Как я перешёл на FastAPI и не жалею", "kak-ia-pereshel-na-fastapi-i-ne-zhaleiu", "FastAPI", 7, 340),
+        ]
+
+        # Создаём фиксированные статьи
         all_articles = []
+        for title, slug, topic, template_idx, views in FIXED_ARTICLES:
+            template = ARTICLE_TEMPLATES[template_idx]
+            content = template['content'].format(topic=topic, topic_lower=topic.lower())
+
+            article, created = Article.objects.get_or_create(
+                slug=slug,
+                defaults={
+                    'title': title,
+                    'content': content,
+                    'author': users[hash(slug) % len(users)] if users else admin,
+                    'status': 'published',
+                    'views': views,
+                }
+            )
+            # Устанавливаем теги
+            topic_tag = tags.get(topic)
+            if topic_tag:
+                article.tags.set([topic_tag])
+            if created:
+                all_articles.append(article)
+            else:
+                all_articles.append(article)
+
+        # Добавляем дополнительные случайные статьи
         topics_used = list(TOPICS)
         random.shuffle(topics_used)
         topic_idx = 0
 
-        # Гарантированно создаём статью "10 лучших практик Django часть 24"
-        django_template = next(t for t in ARTICLE_TEMPLATES if '10 лучших практик' in t['title'])
-        django_title = django_template['title'].format(topic='Django') + ' — часть 24'
-        django_content = django_template['content'].format(topic='Django', topic_lower='django')
-        django_article = Article.objects.create(
-            title=django_title,
-            slug='10-luchshikh-praktik-django-chast-24',
-            content=django_content,
-            author=users[0] if users else admin,
-            status='published',
-            views=250,
-        )
-        django_article.tags.set([tags['Django'], tags['Python']])
-        all_articles.append(django_article)
-
         for user in users:
-            count = random.randint(5, 25)
+            count = random.randint(3, 8)
             for i in range(count):
                 topic = topics_used[topic_idx % len(topics_used)]
                 topic_idx += 1
@@ -476,7 +520,6 @@ class Command(BaseCommand):
                 )
                 # уникальность заголовка
                 base_title = title
-                suffix = ''
                 attempts = 0
                 while Article.objects.filter(title=title).exists():
                     attempts += 1
