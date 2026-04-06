@@ -16,6 +16,9 @@ class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        ordering = ['name']
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.name) or slugify(self.name, allow_unicode=True) or f'tag-{abs(hash(self.name)) % 10000}'

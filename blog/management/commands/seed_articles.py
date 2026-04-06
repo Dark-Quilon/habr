@@ -475,6 +475,7 @@ class Command(BaseCommand):
             ("Python vs альтернативы: что выбрать?", "python-vs-alternativy-chto-vybrat", "Python", 4, 390),
             ("Мой опыт работы с DevOps", "moi-opyt-raboty-s-devops", "DevOps", 5, 260),
             ("Как я перешёл на FastAPI и не жалею", "kak-ia-pereshel-na-fastapi-i-ne-zhaleiu", "FastAPI", 7, 340),
+            ("FastAPI для продакшена — часть 53", "fastapi-dlia-prodakshena-chast-53", "FastAPI", 1, 425),
         ]
 
         # Создаём фиксированные статьи
