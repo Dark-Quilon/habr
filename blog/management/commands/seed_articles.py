@@ -445,6 +445,21 @@ class Command(BaseCommand):
         random.shuffle(topics_used)
         topic_idx = 0
 
+        # Гарантированно создаём статью "10 лучших практик Django часть 24"
+        django_template = next(t for t in ARTICLE_TEMPLATES if '10 лучших практик' in t['title'])
+        django_title = django_template['title'].format(topic='Django') + ' — часть 24'
+        django_content = django_template['content'].format(topic='Django', topic_lower='django')
+        django_article = Article.objects.create(
+            title=django_title,
+            slug='10-luchshikh-praktik-django-chast-24',
+            content=django_content,
+            author=users[0] if users else admin,
+            status='published',
+            views=250,
+        )
+        django_article.tags.set([tags['Django'], tags['Python']])
+        all_articles.append(django_article)
+
         for user in users:
             count = random.randint(5, 25)
             for i in range(count):
