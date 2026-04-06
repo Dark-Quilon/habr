@@ -388,6 +388,9 @@ class Command(BaseCommand):
     help = 'Создаёт тестовые данные: 10-15 пользователей, 50-250 статей'
 
     def handle(self, *args, **kwargs):
+        # Фиксированный seed для детерминированной генерации
+        random.seed(42)
+
         self.stdout.write('Очищаю базу данных...')
         try:
             Vote.objects.all().delete()
