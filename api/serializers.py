@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from blog.models import Profile, Tag, Article, Comment, Follow, Notification
+import markdown
+from django.utils.safestring import mark_safe
 
 
 # 2.1
@@ -32,21 +34,33 @@ class ArticleListSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     rating = serializers.SerializerMethodField()
+    preview = serializers.SerializerMethodField()
 
     def get_rating(self, obj):
         return obj.rating()
 
+    def get_preview(self, obj):
+        # Берём первые 300 символов контента и конвертируем в HTML
+        preview_text = obj.content[:300] + '...' if len(obj.content) > 300 else obj.content
+        html = markdown.markdown(preview_text, extensions=['fenced_code', 'tables'])
+        return mark_safe(html)
+
     class Meta:
         model = Article
-        fields = ['id', 'slug', 'title', 'author', 'tags', 'status', 'views', 'rating', 'created_at']
+        fields = ['id', 'slug', 'title', 'author', 'tags', 'status', 'views', 'rating', 'created_at', 'preview']
 
 
 # 2.4
 class ArticleDetailSerializer(ArticleListSerializer):
     comments = CommentSerializer(many=True, read_only=True)
+    content_html = serializers.SerializerMethodField()
+
+    def get_content_html(self, obj):
+        html = markdown.markdown(obj.content, extensions=['fenced_code', 'tables'])
+        return mark_safe(html)
 
     class Meta(ArticleListSerializer.Meta):
-        fields = ArticleListSerializer.Meta.fields + ['content', 'comments', 'updated_at']
+        fields = ArticleListSerializer.Meta.fields + ['content', 'content_html', 'comments', 'updated_at']
 
 
 # 2.5

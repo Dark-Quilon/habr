@@ -1,0 +1,30 @@
+warning: in the working copy of '.qwen/settings.json', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/.qwen/settings.json b/.qwen/settings.json[m
+[1mindex 381f1b5..f2f196e 100644[m
+[1m--- a/.qwen/settings.json[m
+[1m+++ b/.qwen/settings.json[m
+[36m@@ -22,7 +22,9 @@[m
+       "Bash(curl *)",[m
+       "Bash(git add *)",[m
+       "Bash(git commit *)",[m
+[31m-      "Bash(git push)"[m
+[32m+[m[32m      "Bash(git push)",[m
+[32m+[m[32m      "Bash(c:\\program *)",[m
+[32m+[m[32m      "Bash(\"c:\\program files\\git\\cmd\\git.exe\" *)"[m
+     ][m
+   },[m
+   "$version": 3[m
+[1mdiff --git a/blog/models.py b/blog/models.py[m
+[1mindex d695111..d6592c4 100644[m
+[1m--- a/blog/models.py[m
+[1m+++ b/blog/models.py[m
+[36m@@ -16,6 +16,9 @@[m [mclass Tag(models.Model):[m
+     name = models.CharField(max_length=50, unique=True)[m
+     slug = models.SlugField(unique=True)[m
+ [m
+[32m+[m[32m    class Meta:[m
+[32m+[m[32m        ordering = ['name'][m
+[32m+[m
+     def save(self, *args, **kwargs):[m
+         if not self.slug:[m
+             base_slug = slugify(self.name) or slugify(self.name, allow_unicode=True) or f'tag-{abs(hash(self.name)) % 10000}'[m

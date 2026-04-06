@@ -69,7 +69,7 @@ export default function ArticleDetail({ slug }) {
           )}
         </div>
 
-        <div className="article-card-content" dangerouslySetInnerHTML={{ __html: article.content }} />
+        <div className="article-card-content" dangerouslySetInnerHTML={{ __html: article.content_html || article.content }} />
       </article>
 
       <CommentSection articleSlug={slug} />

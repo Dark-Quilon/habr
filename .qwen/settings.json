@@ -22,7 +22,9 @@
       "Bash(curl *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(c:\\program *)",
+      "Bash(\"c:\\program files\\git\\cmd\\git.exe\" *)"
     ]
   },
   "$version": 3
