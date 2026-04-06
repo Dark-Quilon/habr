@@ -18,6 +18,12 @@ urlpatterns = [
     path('auth/login/', LoginView.as_view(), name='auth-login'),
     path('auth/logout/', LogoutView.as_view(), name='auth-logout'),
     path('auth/me/', MeView.as_view(), name='auth-me'),
+    # Explicit article detail route
+    path(
+        'articles/<slug:slug>/',
+        ArticleViewSet.as_view({'get': 'retrieve'}),
+        name='article-detail',
+    ),
     # Nested routes for comments
     path(
         'articles/<slug:article_slug>/comments/',
