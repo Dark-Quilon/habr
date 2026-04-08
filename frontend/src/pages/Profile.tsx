@@ -31,12 +31,17 @@ export default function Profile({ username }) {
   }
 
   const handleFollow = async () => {
+    if (!currentUser) {
+      window.location.href = '/login'
+      return
+    }
     try {
       const data = await followUser(username)
       setIsFollowing(data.is_following)
       setFollowersCount(data.followers_count)
     } catch (err) {
       console.error('Follow error:', err)
+      alert('Ошибка при подписке')
     }
   }
 

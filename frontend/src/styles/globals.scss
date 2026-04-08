@@ -133,6 +133,8 @@ main {
   gap: 0.5rem;
   padding: 0.5rem 0;
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 
   &:hover {
     background: #f5f5f5;
@@ -312,6 +314,13 @@ main {
 
 .habr-footer-social-icon {
   font-size: 1.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 // Profile

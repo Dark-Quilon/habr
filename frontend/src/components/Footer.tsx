@@ -10,31 +10,31 @@ export default function Footer() {
             <div className="habr-footer-title">Проекты</div>
             <ul className="list-unstyled">
               <li><Link href="/">Habr</Link></li>
-              <li><Link href="/">Q&A</Link></li>
+              <li><Link href="/?search=Q%26A">Q&A</Link></li>
             </ul>
           </div>
           <div className="col-md-3 mb-3">
             <div className="habr-footer-title">Разработка</div>
             <ul className="list-unstyled">
-              <li><Link href="/">Бэкенд</Link></li>
-              <li><Link href="/">Фронтенд</Link></li>
-              <li><Link href="/">Мобильная</Link></li>
+              <li><Link href="/?search=Backend">Бэкенд</Link></li>
+              <li><Link href="/?search=Frontend">Фронтенд</Link></li>
+              <li><Link href="/?search=Mobile">Мобильная</Link></li>
             </ul>
           </div>
           <div className="col-md-3 mb-3">
             <div className="habr-footer-title">Инфраструктура</div>
             <ul className="list-unstyled">
-              <li><Link href="/">Администрирование</Link></li>
-              <li><Link href="/">Безопасность</Link></li>
-              <li><Link href="/">DevOps</Link></li>
+              <li><Link href="/?search=Linux">Администрирование</Link></li>
+              <li><Link href="/?search=Security">Безопасность</Link></li>
+              <li><Link href="/?search=DevOps">DevOps</Link></li>
             </ul>
           </div>
           <div className="col-md-3 mb-3">
             <div className="habr-footer-title">Соцсети</div>
             <div className="habr-footer-social">
-              <span className="habr-footer-social-icon" style={{ color: '#1877f2' }}>f</span>
-              <span className="habr-footer-social-icon" style={{ color: '#1da1f2' }}>𝕏</span>
-              <span className="habr-footer-social-icon" style={{ color: '#ff0000' }}>▶</span>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="habr-footer-social-icon" style={{ color: '#1877f2' }}>f</a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="habr-footer-social-icon" style={{ color: '#1da1f2' }}>𝕏</a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="habr-footer-social-icon" style={{ color: '#ff0000' }}>▶</a>
             </div>
           </div>
         </div>

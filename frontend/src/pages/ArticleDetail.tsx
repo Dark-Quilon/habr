@@ -58,13 +58,23 @@ export default function ArticleDetail({ slug }) {
           {user && user.username === article.author?.username && (
             <div className="ms-auto d-flex gap-2">
               <Link href={`/articles/${article.slug}/edit`} className="btn btn-sm btn-outline-primary">Редактировать</Link>
-              <button className="btn btn-sm btn-outline-danger" onClick={async () => {
-                if (confirm('Удалить статью?')) {
-                  const { deleteArticle } = await import('../lib/api')
-                  await deleteArticle(article.slug)
-                  route('/')
-                }
-              }}>Удалить</button>
+              <button 
+                className="btn btn-sm btn-outline-danger" 
+                onClick={async () => {
+                  if (confirm('Удалить статью? Это действие нельзя отменить.')) {
+                    try {
+                      const { deleteArticle } = await import('../lib/api')
+                      await deleteArticle(article.slug)
+                      route('/')
+                    } catch (err) {
+                      console.error('Delete error:', err)
+                      alert('Ошибка при удалении статьи')
+                    }
+                  }
+                }}
+              >
+                Удалить
+              </button>
             </div>
           )}
         </div>
