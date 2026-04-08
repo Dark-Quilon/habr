@@ -1,4 +1,5 @@
 import { Router } from 'preact-router'
+import { useState, useEffect } from 'preact/hooks'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -15,11 +16,21 @@ import Write from './pages/Write'
 import NotFound from './pages/NotFound'
 
 export default function App() {
+  const [routerKey, setRouterKey] = useState(0)
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setRouterKey(k => k + 1)
+    }
+    window.addEventListener('popstate', handleRouteChange)
+    return () => window.removeEventListener('popstate', handleRouteChange)
+  }, [])
+
   return (
     <>
       <Navbar />
       <main>
-        <Router>
+        <Router key={routerKey}>
           <Home path="/" />
           <ArticleDetail path="/articles/:slug" />
           <ArticleNew path="/articles/new" />

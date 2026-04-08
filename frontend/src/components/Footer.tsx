@@ -16,17 +16,17 @@ export default function Footer() {
           <div className="col-md-3 mb-3">
             <div className="habr-footer-title">Разработка</div>
             <ul className="list-unstyled">
-              <li><Link href="/?search=Backend">Бэкенд</Link></li>
-              <li><Link href="/?search=Frontend">Фронтенд</Link></li>
-              <li><Link href="/?search=Mobile">Мобильная</Link></li>
+              <li><Link href="/?tags__slug=bekend">Бэкенд</Link></li>
+              <li><Link href="/?tags__slug=frontend">Фронтенд</Link></li>
+              <li><Link href="/?tags__slug=mobilnaia-razrabotka">Мобильная</Link></li>
             </ul>
           </div>
           <div className="col-md-3 mb-3">
             <div className="habr-footer-title">Инфраструктура</div>
             <ul className="list-unstyled">
-              <li><Link href="/?search=Linux">Администрирование</Link></li>
-              <li><Link href="/?search=Security">Безопасность</Link></li>
-              <li><Link href="/?search=DevOps">DevOps</Link></li>
+              <li><Link href="/?tags__slug=linux">Администрирование</Link></li>
+              <li><Link href="/?tags__slug=bezopasnost">Безопасность</Link></li>
+              <li><Link href="/?tags__slug=devops">DevOps</Link></li>
             </ul>
           </div>
           <div className="col-md-3 mb-3">

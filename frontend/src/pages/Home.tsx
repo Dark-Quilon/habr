@@ -1,11 +1,12 @@
 import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
-import { Link, route } from 'preact-router'
+import { Link, route, useLocation } from 'preact-router'
 import { getArticles, getTags, getStoredUser } from '../lib/api'
 import ArticleCard from '../components/ArticleCard'
 import Pagination from '../components/Pagination'
 
 export default function Home() {
+  const location = useLocation()
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [count, setCount] = useState(0)
@@ -24,19 +25,10 @@ export default function Home() {
     setActiveTag(t)
   }
 
-  // Читаем параметры при монтировании
+  // Читаем параметры при монтировании и при изменении маршрута
   useEffect(() => {
     readUrlParams()
-  }, [])
-
-  // Слушаем изменения URL
-  useEffect(() => {
-    const handlePopState = () => {
-      readUrlParams()
-    }
-    window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
-  }, [])
+  }, [location?.url])
 
   useEffect(() => {
     getTags().then(() => {}).catch(() => {})
