@@ -1,12 +1,12 @@
 import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
-import { Link, route } from 'preact-router'
+import { Link, route, useLocation } from 'preact-router'
 import { getArticles, getTags, getStoredUser } from '../lib/api'
 import ArticleList from '../components/ArticleList'
 import Pagination from '../components/Pagination'
-import SearchBar from '../components/SearchBar'
 
 export default function Home() {
+  const location = useLocation()
   const [articles, setArticles] = useState([])
   const [tags, setTags] = useState([])
   const [loading, setLoading] = useState(true)
@@ -26,19 +26,10 @@ export default function Home() {
     setActiveTag(t)
   }
 
-  // Читаем параметры при монтировании
+  // Читаем параметры при монтировании и при изменении маршрута
   useEffect(() => {
     readUrlParams()
-  }, [])
-
-  // Слушаем изменения маршрута
-  useEffect(() => {
-    const handleRouteChange = () => {
-      readUrlParams()
-    }
-    window.addEventListener('popstate', handleRouteChange)
-    return () => window.removeEventListener('popstate', handleRouteChange)
-  }, [])
+  }, [location])
 
   useEffect(() => {
     getTags().then(setTags).catch(() => {})
@@ -69,10 +60,6 @@ export default function Home() {
       <h1 className="mb-4">
         {search ? `Результаты поиска: "${search}"` : activeTag ? `Тег: ${activeTag}` : 'Статьи'}
       </h1>
-
-      <div className="mb-3">
-        <SearchBar defaultValue={search} />
-      </div>
 
       {tags.length > 0 && (
         <div className="mb-4 d-flex flex-wrap gap-2">
