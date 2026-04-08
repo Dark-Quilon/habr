@@ -2,13 +2,12 @@ import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
 import { Link, route, useLocation } from 'preact-router'
 import { getArticles, getTags, getStoredUser } from '../lib/api'
-import ArticleList from '../components/ArticleList'
+import ArticleCard from '../components/ArticleCard'
 import Pagination from '../components/Pagination'
 
 export default function Home() {
   const location = useLocation()
   const [articles, setArticles] = useState([])
-  const [tags, setTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [count, setCount] = useState(0)
   const [page, setPage] = useState(1)
@@ -32,7 +31,7 @@ export default function Home() {
   }, [location])
 
   useEffect(() => {
-    getTags().then(setTags).catch(() => {})
+    getTags().then(() => {}).catch(() => {})
   }, [])
 
   // Загружаем статьи при изменении параметров
@@ -57,61 +56,71 @@ export default function Home() {
 
   return (
     <div className="container py-4">
-      <h1 className="mb-4">
-        {search ? `Результаты поиска: "${search}"` : activeTag ? `Тег: ${activeTag}` : 'Статьи'}
-      </h1>
+      <div className="row">
+        {/* Основной контент */}
+        <div className="col-lg-8">
+          {/* Моя лента */}
+          <div className="mb-4 p-3 border rounded bg-white">
+            <h2 className="h5 mb-2">Моя лента</h2>
+            {getStoredUser() ? (
+              <Link href="/feed" className="btn btn-sm btn-outline-secondary">Настройки ленты</Link>
+            ) : (
+              <p className="mb-0 text-muted small">
+                Войдите, чтобы видеть свою ленту.{' '}
+                <Link href="/login">Войти</Link>
+              </p>
+            )}
+          </div>
 
-      {tags.length > 0 && (
-        <div className="mb-4 d-flex flex-wrap gap-2">
-          <Link
-            href="/"
-            className={`badge rounded-pill text-decoration-none fs-6 ${!activeTag ? 'bg-primary' : 'bg-secondary'}`}
-          >
-            Все
-          </Link>
-          {tags.map(tag => (
-            <Link
-              key={tag.id}
-              href={`/?tags__slug=${tag.slug}`}
-              className={`badge rounded-pill text-decoration-none fs-6 ${activeTag === tag.slug ? 'bg-primary' : 'bg-secondary'}`}
-            >
-              {tag.name}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <div className="mb-4 p-3 border rounded">
-        <h2 className="h5 mb-2">Моя лента</h2>
-        {getStoredUser() ? (
-          <Link href="/feed" className="btn btn-primary btn-sm">Перейти в ленту</Link>
-        ) : (
-          <p className="mb-1 text-muted">
-            Войдите, чтобы видеть свою ленту.{' '}
-            <Link href="/login">Войти</Link>
-          </p>
-        )}
-      </div>
-
-      {loading ? (
-        <div className="loading">Загрузка...</div>
-      ) : articles.length === 0 ? (
-        <div className="text-center py-5">
-          <div className="mb-3" style={{ fontSize: '3rem' }}>🔍</div>
-          <h3 className="h5 mb-2">Статьи не найдены</h3>
-          <p className="text-muted">
-            {search ? `По запросу "${search}" ничего не найдено. Попробуйте изменить запрос.` : 'Пока нет опубликованных статей.'}
-          </p>
-          {search && (
-            <Link href="/" className="btn btn-primary btn-sm mt-3">Показать все статьи</Link>
+          {/* Список статей */}
+          {loading ? (
+            <div className="loading">Загрузка...</div>
+          ) : articles.length === 0 ? (
+            <div className="text-center py-5 bg-white rounded">
+              <div className="mb-3" style={{ fontSize: '3rem' }}>🔍</div>
+              <h3 className="h5 mb-2">Статьи не найдены</h3>
+              <p className="text-muted">
+                {search ? `По запросу "${search}" ничего не найдено.` : 'Пока нет опубликованных статей.'}
+              </p>
+              {search && (
+                <Link href="/" className="btn btn-sm btn-outline-primary mt-2">Показать все статьи</Link>
+              )}
+            </div>
+          ) : (
+            <>
+              {articles.map(article => (
+                <ArticleCard key={article.slug || article.id} article={article} compact={true} />
+              ))}
+              <Pagination count={count} page={page} searchParams={{ ...(search ? { search } : {}), ...(activeTag ? { tags__slug: activeTag } : {}) }} />
+            </>
           )}
         </div>
-      ) : (
-        <>
-          <ArticleList articles={articles} />
-          <Pagination count={count} page={page} searchParams={{ ...(search ? { search } : {}), ...(activeTag ? { tags__slug: activeTag } : {}) }} />
-        </>
-      )}
+
+        {/* Боковая панель */}
+        <div className="col-lg-4 d-none d-lg-block">
+          <div className="bg-white rounded p-3 sticky-top" style={{ top: '80px' }}>
+            <h6 className="text-uppercase text-muted small fw-bold mb-3">Читают сейчас</h6>
+            {loading ? (
+              <div className="text-muted small">Загрузка...</div>
+            ) : (
+              <div>
+                {articles.slice(0, 5).map((article, idx) => (
+                  <div key={article.slug || article.id} className="mb-3 pb-3 border-bottom">
+                    <Link href={`/articles/${article.slug}`} className="text-decoration-none">
+                      <div className="fw-bold small mb-1" style={{ lineHeight: '1.3' }}>{article.title}</div>
+                    </Link>
+                    <div className="d-flex align-items-center gap-2 text-muted small">
+                      <span>👁 {article.views}</span>
+                      <span>💬 {article.comments_count ?? 0}</span>
+                      <span className="text-success">+{article.rating ?? 0}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -203,6 +203,11 @@ main {
   }
 }
 
+.article-card-compact {
+  padding: 1rem 1.5rem;
+  border-left: 3px solid var(--habr-accent);
+}
+
 .article-card-title {
   font-size: 1.25rem;
   font-weight: 600;
