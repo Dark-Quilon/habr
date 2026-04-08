@@ -15,6 +15,7 @@ TAGS_POOL = [
     'Тестирование', 'Безопасность', 'Фронтенд', 'Бэкенд',
     'Машинное обучение', 'Алгоритмы', 'TypeScript', 'Vue.js',
     'Kubernetes', 'CI/CD', 'GraphQL', 'MongoDB', 'RabbitMQ',
+    'Mobile', 'GameDev', 'Engineering', 'Analysis',
 ]
 
 ARTICLE_TEMPLATES = [

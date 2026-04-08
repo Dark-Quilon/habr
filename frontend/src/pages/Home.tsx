@@ -1,6 +1,6 @@
 import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
-import { Link } from 'preact-router'
+import { Link, route } from 'preact-router'
 import { getArticles, getTags, getStoredUser } from '../lib/api'
 import ArticleList from '../components/ArticleList'
 import Pagination from '../components/Pagination'
@@ -15,7 +15,8 @@ export default function Home() {
   const [search, setSearch] = useState('')
   const [activeTag, setActiveTag] = useState('')
 
-  useEffect(() => {
+  // Функция для чтения параметров URL
+  const readUrlParams = () => {
     const params = new URLSearchParams(window.location.search)
     const p = parseInt(params.get('page')) || 1
     const s = params.get('search') || ''
@@ -23,15 +24,30 @@ export default function Home() {
     setPage(p)
     setSearch(s)
     setActiveTag(t)
+  }
+
+  // Читаем параметры при монтировании
+  useEffect(() => {
+    readUrlParams()
   }, [])
 
+  // Слушаем изменения маршрута
   useEffect(() => {
-    loadData()
-  }, [page, search, activeTag])
+    const handleRouteChange = () => {
+      readUrlParams()
+    }
+    window.addEventListener('popstate', handleRouteChange)
+    return () => window.removeEventListener('popstate', handleRouteChange)
+  }, [])
 
   useEffect(() => {
     getTags().then(setTags).catch(() => {})
   }, [])
+
+  // Загружаем статьи при изменении параметров
+  useEffect(() => {
+    loadData()
+  }, [page, search, activeTag])
 
   const loadData = async () => {
     setLoading(true)
@@ -50,7 +66,9 @@ export default function Home() {
 
   return (
     <div className="container py-4">
-      <h1 className="mb-4">Статьи</h1>
+      <h1 className="mb-4">
+        {search ? `Результаты поиска: "${search}"` : activeTag ? `Тег: ${activeTag}` : 'Статьи'}
+      </h1>
 
       <div className="mb-3">
         <SearchBar defaultValue={search} />
@@ -90,6 +108,17 @@ export default function Home() {
 
       {loading ? (
         <div className="loading">Загрузка...</div>
+      ) : articles.length === 0 ? (
+        <div className="text-center py-5">
+          <div className="mb-3" style={{ fontSize: '3rem' }}>🔍</div>
+          <h3 className="h5 mb-2">Статьи не найдены</h3>
+          <p className="text-muted">
+            {search ? `По запросу "${search}" ничего не найдено. Попробуйте изменить запрос.` : 'Пока нет опубликованных статей.'}
+          </p>
+          {search && (
+            <Link href="/" className="btn btn-primary btn-sm mt-3">Показать все статьи</Link>
+          )}
+        </div>
       ) : (
         <>
           <ArticleList articles={articles} />

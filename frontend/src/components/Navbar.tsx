@@ -149,33 +149,43 @@ export default function Navbar() {
 
               <div className="habr-offcanvas-section-title">Разработка и инженерия</div>
               {[
-                { icon: '⚙️', label: 'Бэкенд', search: 'Backend' },
-                { icon: '🖥️', label: 'Фронтенд', search: 'Frontend' },
+                { icon: '⚙️', label: 'Бэкенд', tagSlug: 'bekend' },
+                { icon: '🖥️', label: 'Фронтенд', tagSlug: 'frontend' },
                 { icon: '📱', label: 'Мобильная разработка', search: 'Mobile' },
                 { icon: '🎮', label: 'Геймдев', search: 'GameDev' },
-                { icon: '🧪', label: 'Тестирование', search: 'Testing' },
-                { icon: '🤖', label: 'AI и ML', search: 'Machine Learning' },
+                { icon: '🧪', label: 'Тестирование', tagSlug: 'testirovanie' },
+                { icon: '🤖', label: 'AI и ML', tagSlug: 'mashinnoe-obuchenie' },
                 { icon: '🏭', label: 'Промышленная инженерия', search: 'Engineering' },
-              ].map(item => (
-                <Link key={item.label} href={`/?search=${item.search}`} className="habr-offcanvas-nav-item" onClick={() => setBurgerOpen(false)}>
-                  <span className="habr-offcanvas-icon">{item.icon}</span>
-                  <span>{item.label}</span>
-                  <span className="habr-offcanvas-arrow">›</span>
-                </Link>
-              ))}
+              ].map(item => {
+                const href = item.tagSlug 
+                  ? `/?tags__slug=${item.tagSlug}`
+                  : `/?search=${item.search}`
+                return (
+                  <Link key={item.label} href={href} className="habr-offcanvas-nav-item" onClick={() => setBurgerOpen(false)}>
+                    <span className="habr-offcanvas-icon">{item.icon}</span>
+                    <span>{item.label}</span>
+                    <span className="habr-offcanvas-arrow">›</span>
+                  </Link>
+                )
+              })}
 
               <div className="habr-offcanvas-section-title">Инфраструктура и данные</div>
               {[
-                { icon: '🛠️', label: 'Администрирование', search: 'Linux' },
-                { icon: '🔒', label: 'Информационная безопасность', search: 'Security' },
+                { icon: '🛠️', label: 'Администрирование', tagSlug: 'linux' },
+                { icon: '🔒', label: 'Информационная безопасность', tagSlug: 'bezopasnost' },
                 { icon: '📊', label: 'Системный и бизнес-анализ', search: 'Analysis' },
-              ].map(item => (
-                <Link key={item.label} href={`/?search=${item.search}`} className="habr-offcanvas-nav-item" onClick={() => setBurgerOpen(false)}>
-                  <span className="habr-offcanvas-icon">{item.icon}</span>
-                  <span>{item.label}</span>
-                  <span className="habr-offcanvas-arrow">›</span>
-                </Link>
-              ))}
+              ].map(item => {
+                const href = item.tagSlug 
+                  ? `/?tags__slug=${item.tagSlug}`
+                  : `/?search=${item.search}`
+                return (
+                  <Link key={item.label} href={href} className="habr-offcanvas-nav-item" onClick={() => setBurgerOpen(false)}>
+                    <span className="habr-offcanvas-icon">{item.icon}</span>
+                    <span>{item.label}</span>
+                    <span className="habr-offcanvas-arrow">›</span>
+                  </Link>
+                )
+              })}
 
               <div className="habr-offcanvas-right">
                 <div className="habr-offcanvas-block">
