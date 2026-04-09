@@ -6,15 +6,12 @@ import { route } from 'preact-router'
  */
 export function navigateToTag(tagSlug: string) {
   const url = tagSlug ? `/?tags__slug=${tagSlug}` : '/'
-  
+
   // Обновляем URL без перезагрузки
   window.history.pushState({ tag: tagSlug }, '', url)
-  
+
   // Уведомляем Home компонент об изменении через кастомное событие
   window.dispatchEvent(new CustomEvent('tagChange', { detail: { tagSlug } }))
-  
-  // Также вызываем route для совместимости
-  route(url, false)
 }
 
 /**
@@ -22,8 +19,7 @@ export function navigateToTag(tagSlug: string) {
  */
 export function navigateToSearch(searchQuery: string) {
   const url = searchQuery ? `/?search=${encodeURIComponent(searchQuery)}` : '/'
-  
+
   window.history.pushState({ search: searchQuery }, '', url)
   window.dispatchEvent(new CustomEvent('searchChange', { detail: { search: searchQuery } }))
-  route(url, false)
 }

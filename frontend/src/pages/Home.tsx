@@ -1,5 +1,5 @@
 import { h } from 'preact'
-import { useState, useEffect } from 'preact/hooks'
+import { useState, useEffect, useRef } from 'preact/hooks'
 import { Link, route } from 'preact-router'
 import { getArticles, getTags, getStoredUser } from '../lib/api'
 import ArticleCard from '../components/ArticleCard'
@@ -12,6 +12,8 @@ export default function Home() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [activeTag, setActiveTag] = useState('')
+
+  const paramsRef = useRef({ page: 1, search: '', activeTag: '' })
 
   // Функция для чтения параметров URL
   const readUrlParams = () => {
@@ -33,6 +35,7 @@ export default function Home() {
   useEffect(() => {
     const handleTagChange = (e: Event) => {
       const detail = (e as CustomEvent).detail
+      console.log('tagChange event:', detail.tagSlug)
       setActiveTag(detail.tagSlug || '')
       setSearch('')
       setPage(1)
@@ -40,6 +43,7 @@ export default function Home() {
 
     const handleSearchChange = (e: Event) => {
       const detail = (e as CustomEvent).detail
+      console.log('searchChange event:', detail.search)
       setSearch(detail.search || '')
       setActiveTag('')
       setPage(1)
@@ -47,13 +51,14 @@ export default function Home() {
 
     // Обработчик для кнопок назад/вперёд
     const handlePopState = () => {
+      console.log('popstate event')
       readUrlParams()
     }
 
     window.addEventListener('tagChange', handleTagChange)
     window.addEventListener('searchChange', handleSearchChange)
     window.addEventListener('popstate', handlePopState)
-    
+
     return () => {
       window.removeEventListener('tagChange', handleTagChange)
       window.removeEventListener('searchChange', handleSearchChange)
@@ -67,23 +72,28 @@ export default function Home() {
 
   // Загружаем статьи при изменении параметров
   useEffect(() => {
-    loadData()
-  }, [page, search, activeTag])
+    console.log('loadData triggered:', { page, search, activeTag })
+    paramsRef.current = { page, search, activeTag }
 
-  const loadData = async () => {
-    setLoading(true)
-    try {
-      const params = { page }
-      if (search) params.search = search
-      if (activeTag) params.tags__slug = activeTag
-      const data = await getArticles(params)
-      setArticles(data.results || [])
-      setCount(data.count || 0)
-    } catch (err) {
-      console.error('Failed to load articles:', err)
+    const loadArticles = async () => {
+      setLoading(true)
+      try {
+        const params: any = { page }
+        if (search) params.search = search
+        if (activeTag) params.tags__slug = activeTag
+        console.log('API call params:', params)
+        const data = await getArticles(params)
+        console.log('API response:', data)
+        setArticles(data.results || [])
+        setCount(data.count || 0)
+      } catch (err) {
+        console.error('Failed to load articles:', err)
+      }
+      setLoading(false)
     }
-    setLoading(false)
-  }
+
+    loadArticles()
+  }, [page, search, activeTag])
 
   return (
     <div className="container py-4">
