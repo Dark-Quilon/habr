@@ -2,6 +2,7 @@ import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
 import { Link, route } from 'preact-router'
 import { getArticle, getStoredUser } from '../lib/api'
+import { navigateToTag } from '../lib/navigation'
 import VoteButtons from '../components/VoteButtons'
 import CommentSection from '../components/CommentSection'
 
@@ -46,9 +47,9 @@ export default function ArticleDetail({ slug }) {
         {article.tags && article.tags.length > 0 && (
           <div className="article-card-tags mb-3">
             {article.tags.map(tag => (
-              <Link key={tag.id || tag.slug} href={`/?tags__slug=${tag.slug}`} className="article-card-tag">
+              <button key={tag.id || tag.slug} onClick={() => navigateToTag(tag.slug)} className="article-card-tag" type="button">
                 {tag.name}
-              </Link>
+              </button>
             ))}
           </div>
         )}

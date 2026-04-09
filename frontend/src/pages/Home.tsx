@@ -1,12 +1,11 @@
 import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
-import { Link, route, useLocation } from 'preact-router'
+import { Link, route } from 'preact-router'
 import { getArticles, getTags, getStoredUser } from '../lib/api'
 import ArticleCard from '../components/ArticleCard'
 import Pagination from '../components/Pagination'
 
 export default function Home() {
-  const location = useLocation()
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [count, setCount] = useState(0)
@@ -25,10 +24,42 @@ export default function Home() {
     setActiveTag(t)
   }
 
-  // Читаем параметры при монтировании и при изменении маршрута
+  // Читаем параметры при монтировании
   useEffect(() => {
     readUrlParams()
-  }, [location?.url])
+  }, [])
+
+  // Обработчик кастомных событий для навигации без перезагрузки
+  useEffect(() => {
+    const handleTagChange = (e: Event) => {
+      const detail = (e as CustomEvent).detail
+      setActiveTag(detail.tagSlug || '')
+      setSearch('')
+      setPage(1)
+    }
+
+    const handleSearchChange = (e: Event) => {
+      const detail = (e as CustomEvent).detail
+      setSearch(detail.search || '')
+      setActiveTag('')
+      setPage(1)
+    }
+
+    // Обработчик для кнопок назад/вперёд
+    const handlePopState = () => {
+      readUrlParams()
+    }
+
+    window.addEventListener('tagChange', handleTagChange)
+    window.addEventListener('searchChange', handleSearchChange)
+    window.addEventListener('popstate', handlePopState)
+    
+    return () => {
+      window.removeEventListener('tagChange', handleTagChange)
+      window.removeEventListener('searchChange', handleSearchChange)
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [])
 
   useEffect(() => {
     getTags().then(() => {}).catch(() => {})
