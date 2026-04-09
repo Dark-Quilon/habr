@@ -1,5 +1,6 @@
 import { h } from 'preact'
 import { Link } from 'preact-router'
+import { navigateToTag } from '../lib/navigation'
 
 export default function ArticleCard({ article, compact = false }) {
   const formatDate = (dateStr) => {
@@ -36,9 +37,9 @@ export default function ArticleCard({ article, compact = false }) {
         {article.tags && article.tags.length > 0 && (
           <div className="article-card-tags mb-2">
             {article.tags.slice(0, 5).map(tag => (
-              <Link key={tag.id || tag.slug} href={`/?tags__slug=${tag.slug}`} className="article-card-tag">
+              <button key={tag.id || tag.slug} onClick={() => navigateToTag(tag.slug)} className="article-card-tag" type="button">
                 {tag.name}
-              </Link>
+              </button>
             ))}
           </div>
         )}
@@ -67,9 +68,9 @@ export default function ArticleCard({ article, compact = false }) {
       {article.tags && article.tags.length > 0 && (
         <div className="article-card-tags">
           {article.tags.map(tag => (
-            <Link key={tag.id || tag.slug} href={`/?tags__slug=${tag.slug}`} className="article-card-tag">
+            <button key={tag.id || tag.slug} onClick={() => navigateToTag(tag.slug)} className="article-card-tag" type="button">
               {tag.name}
-            </Link>
+            </button>
           ))}
         </div>
       )}

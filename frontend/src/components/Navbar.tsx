@@ -2,6 +2,7 @@ import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
 import { Link, route } from 'preact-router'
 import { getStoredUser, removeToken, logout, getTags } from '../lib/api'
+import { navigateToTag } from '../lib/navigation'
 
 export default function Navbar() {
   const [user, setUser] = useState(null)
@@ -163,41 +164,41 @@ export default function Navbar() {
               {[
                 { icon: '⚙️', label: 'Бэкенд', tagSlug: 'bekend' },
                 { icon: '🖥️', label: 'Фронтенд', tagSlug: 'frontend' },
-                { icon: '📱', label: 'Мобильная разработка', search: 'Mobile' },
-                { icon: '🎮', label: 'Геймдев', search: 'GameDev' },
+                { icon: '📱', label: 'Мобильная разработка', tagSlug: 'mobilnaia-razrabotka' },
+                { icon: '🎮', label: 'Геймдев', tagSlug: 'gamedev' },
                 { icon: '🧪', label: 'Тестирование', tagSlug: 'testirovanie' },
                 { icon: '🤖', label: 'AI и ML', tagSlug: 'mashinnoe-obuchenie' },
-                { icon: '🏭', label: 'Промышленная инженерия', search: 'Engineering' },
-              ].map(item => {
-                const href = item.tagSlug 
-                  ? `/?tags__slug=${item.tagSlug}`
-                  : `/?search=${item.search}`
-                return (
-                  <Link key={item.label} href={href} className="habr-offcanvas-nav-item" onClick={() => setBurgerOpen(false)}>
-                    <span className="habr-offcanvas-icon">{item.icon}</span>
-                    <span>{item.label}</span>
-                    <span className="habr-offcanvas-arrow">›</span>
-                  </Link>
-                )
-              })}
+                { icon: '🏭', label: 'Промышленная инженерия', tagSlug: 'engineering' },
+              ].map(item => (
+                <button
+                  key={item.label}
+                  className="habr-offcanvas-nav-item"
+                  onClick={() => { setBurgerOpen(false); navigateToTag(item.tagSlug) }}
+                  type="button"
+                >
+                  <span className="habr-offcanvas-icon">{item.icon}</span>
+                  <span>{item.label}</span>
+                  <span className="habr-offcanvas-arrow">›</span>
+                </button>
+              ))}
 
               <div className="habr-offcanvas-section-title">Инфраструктура и данные</div>
               {[
                 { icon: '🛠️', label: 'Администрирование', tagSlug: 'linux' },
                 { icon: '🔒', label: 'Информационная безопасность', tagSlug: 'bezopasnost' },
-                { icon: '📊', label: 'Системный и бизнес-анализ', search: 'Analysis' },
-              ].map(item => {
-                const href = item.tagSlug 
-                  ? `/?tags__slug=${item.tagSlug}`
-                  : `/?search=${item.search}`
-                return (
-                  <Link key={item.label} href={href} className="habr-offcanvas-nav-item" onClick={() => setBurgerOpen(false)}>
-                    <span className="habr-offcanvas-icon">{item.icon}</span>
-                    <span>{item.label}</span>
-                    <span className="habr-offcanvas-arrow">›</span>
-                  </Link>
-                )
-              })}
+                { icon: '📊', label: 'Системный и бизнес-анализ', tagSlug: 'analiz' },
+              ].map(item => (
+                <button
+                  key={item.label}
+                  className="habr-offcanvas-nav-item"
+                  onClick={() => { setBurgerOpen(false); navigateToTag(item.tagSlug) }}
+                  type="button"
+                >
+                  <span className="habr-offcanvas-icon">{item.icon}</span>
+                  <span>{item.label}</span>
+                  <span className="habr-offcanvas-arrow">›</span>
+                </button>
+              ))}
 
               <div className="habr-offcanvas-right">
                 <div className="habr-offcanvas-block">
@@ -206,7 +207,14 @@ export default function Navbar() {
                   </div>
                   <div className="habr-offcanvas-tags-grid">
                     {['Python', 'C++', 'Java', 'Go', 'PostgreSQL', 'Rust', 'Linux', 'Kotlin'].map(t => (
-                      <Link key={t} href={`/?search=${t}`} className="habr-offcanvas-tag" onClick={() => setBurgerOpen(false)}>{t}</Link>
+                      <button
+                        key={t}
+                        className="habr-offcanvas-tag"
+                        onClick={() => { setBurgerOpen(false); navigateToTag(t.toLowerCase()) }}
+                        type="button"
+                      >
+                        {t}
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -218,7 +226,14 @@ export default function Navbar() {
                   <div className="habr-offcanvas-tags-grid">
                     {tags.length > 0
                       ? tags.slice(0, 8).map(tag => (
-                          <Link key={tag.id} href={`/?tags__slug=${tag.slug}`} className="habr-offcanvas-tag" onClick={() => setBurgerOpen(false)}>{tag.name}</Link>
+                          <button
+                            key={tag.id}
+                            className="habr-offcanvas-tag"
+                            onClick={() => { setBurgerOpen(false); navigateToTag(tag.slug) }}
+                            type="button"
+                          >
+                            {tag.name}
+                          </button>
                         ))
                       : ['Карьера в IT', 'Искусственный интеллект', 'Веб-разработка', 'Алгоритмы'].map(t => (
                           <span key={t} className="habr-offcanvas-tag">{t}</span>
