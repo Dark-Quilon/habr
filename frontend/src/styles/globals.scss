@@ -135,9 +135,20 @@ main {
   cursor: pointer;
   text-decoration: none;
   color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  text-align: left;
+  font-size: inherit;
 
   &:hover {
     background: #f5f5f5;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
   }
 }
 
@@ -195,6 +206,11 @@ main {
 
   &:hover {
     background: #dee2e6;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
   }
 }
 
@@ -267,6 +283,11 @@ main {
 
   &:hover {
     background: #dee2e6;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
   }
 }
 
