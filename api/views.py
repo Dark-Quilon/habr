@@ -80,7 +80,7 @@ class ArticleViewSet(ModelViewSet):
     lookup_field = 'slug'
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    search_fields = ['title', 'content', 'tags__name']
+    search_fields = ['title', 'tags__name']
     ordering_fields = ['created_at', 'views']
     filterset_fields = ['status', 'tags__slug', 'author__username']
     pagination_class = StandardPagination
