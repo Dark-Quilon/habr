@@ -4,9 +4,10 @@
 :root {
   --habr-dark: #1f2937;
   --habr-accent: #4db6bc;
-  --habr-bg: #f5f5f5;
+  --habr-bg: #e8e8e8;
   --habr-text: #333;
   --habr-muted: #6c757d;
+  --habr-card: #ffffff;
 }
 
 body {
@@ -18,6 +19,95 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+// Dark theme
+body.dark-theme {
+  --habr-bg: #0d1117;
+  --habr-text: #e6edf3;
+  --habr-muted: #8b949e;
+  --habr-card: #161b22;
+
+  .habr-offcanvas {
+    background: #161b22;
+    color: #e6edf3;
+  }
+
+  .habr-offcanvas-nav-item:hover {
+    background: #21262d;
+  }
+
+  .habr-offcanvas-tag,
+  .article-card-tag {
+    background: #21262d;
+    color: #e6edf3;
+  }
+
+  .habr-offcanvas-tag:hover,
+  .article-card-tag:hover {
+    background: #30363d;
+  }
+
+  .dropdown-menu {
+    background: #161b22;
+    border-color: #30363d;
+    z-index: 1100 !important;
+
+    .dropdown-item {
+      color: #e6edf3;
+
+      &:hover {
+        background: #21262d;
+      }
+    }
+
+    .dropdown-divider {
+      border-color: #30363d;
+    }
+  }
+
+  .form-control {
+    background: #0d1117;
+    border-color: #30363d;
+    color: #e6edf3;
+  }
+
+  .form-control-color {
+    border-color: #30363d;
+  }
+
+  .border {
+    border-color: #30363d !important;
+  }
+
+  .bg-white {
+    background-color: #161b22 !important;
+  }
+
+  .text-muted {
+    color: #8b949e !important;
+  }
+
+  .btn-outline-secondary {
+    border-color: #30363d;
+    color: #e6edf3;
+
+    &:hover {
+      background: #21262d;
+      color: #e6edf3;
+    }
+  }
+
+  .btn-primary {
+    background: #4db6bc;
+    border-color: #4db6bc;
+    color: #fff;
+  }
+
+  .sticky-top {
+    background-color: #161b22 !important;
+    border-top-color: #000 !important;
+  }
 }
 
 main {
@@ -216,7 +306,7 @@ main {
 
 // Article card
 .article-card {
-  background: #fff;
+  background: var(--habr-card);
   border-radius: 0.5rem;
   padding: 1.5rem;
   margin-bottom: 1rem;
@@ -480,4 +570,40 @@ main {
   .habr-offcanvas {
     width: 280px;
   }
+}
+
+// Sidebar "Читают сейчас" - черный бордер вместо синего
+.sticky-top {
+  border-top: 3px solid #000 !important;
+  z-index: 100 !important;
+}
+
+// Ссылки в sidebar - не синие
+.sticky-top a {
+  color: inherit !important;
+
+  &:hover {
+    color: var(--habr-accent) !important;
+  }
+}
+
+// Navbar всегда поверх
+.navbar {
+  z-index: 1050 !important;
+}
+
+// Dropdown настроек - поверх всего
+.dropdown-menu {
+  z-index: 1060 !important;
+}
+
+// Dropdown настроек - абсолютное позиционирование
+.settings-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }

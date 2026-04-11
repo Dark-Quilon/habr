@@ -17,16 +17,16 @@ export default function Footer() {
           <div className="col-md-3 mb-3">
             <div className="habr-footer-title">Разработка</div>
             <ul className="list-unstyled">
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('bekend')} type="button">Бэкенд</button></li>
+              <li><button className="footer-tag-btn" onClick={() => navigateToTag('backend')} type="button">Бэкенд</button></li>
               <li><button className="footer-tag-btn" onClick={() => navigateToTag('frontend')} type="button">Фронтенд</button></li>
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('mobilnaia-razrabotka')} type="button">Мобильная</button></li>
+              <li><button className="footer-tag-btn" onClick={() => navigateToTag('mobile')} type="button">Мобильная</button></li>
             </ul>
           </div>
           <div className="col-md-3 mb-3">
             <div className="habr-footer-title">Инфраструктура</div>
             <ul className="list-unstyled">
               <li><button className="footer-tag-btn" onClick={() => navigateToTag('linux')} type="button">Администрирование</button></li>
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('bezopasnost')} type="button">Безопасность</button></li>
+              <li><button className="footer-tag-btn" onClick={() => navigateToTag('security')} type="button">Безопасность</button></li>
               <li><button className="footer-tag-btn" onClick={() => navigateToTag('devops')} type="button">DevOps</button></li>
             </ul>
           </div>

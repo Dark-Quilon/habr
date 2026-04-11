@@ -35,7 +35,6 @@ export default function Home() {
   useEffect(() => {
     const handleTagChange = (e: Event) => {
       const detail = (e as CustomEvent).detail
-      console.log('tagChange event:', detail.tagSlug)
       setActiveTag(detail.tagSlug || '')
       setSearch('')
       setPage(1)
@@ -43,7 +42,6 @@ export default function Home() {
 
     const handleSearchChange = (e: Event) => {
       const detail = (e as CustomEvent).detail
-      console.log('searchChange event:', detail.search)
       setSearch(detail.search || '')
       setActiveTag('')
       setPage(1)
@@ -51,7 +49,6 @@ export default function Home() {
 
     // Обработчик для кнопок назад/вперёд
     const handlePopState = () => {
-      console.log('popstate event')
       readUrlParams()
     }
 

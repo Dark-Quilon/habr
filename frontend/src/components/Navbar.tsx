@@ -2,7 +2,7 @@ import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
 import { Link, route } from 'preact-router'
 import { getStoredUser, removeToken, logout, getTags } from '../lib/api'
-import { navigateToTag } from '../lib/navigation'
+import { navigateToTag, navigateToSearch } from '../lib/navigation'
 
 export default function Navbar() {
   const [user, setUser] = useState(null)
@@ -10,6 +10,11 @@ export default function Navbar() {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light')
+  const [bgColor, setBgColor] = useState(() => localStorage.getItem('bgColor') || '#e8e8e8')
+  const [textColor, setTextColor] = useState(() => localStorage.getItem('textColor') || '#333333')
+  const [cardColor, setCardColor] = useState(() => localStorage.getItem('cardColor') || '#ffffff')
   const [searchQuery, setSearchQuery] = useState('')
   const [tags, setTags] = useState([])
 
@@ -37,6 +42,24 @@ export default function Navbar() {
       .catch(() => {})
   }, [])
 
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.setProperty('--habr-bg', bgColor)
+    root.style.setProperty('--habr-text', textColor)
+    root.style.setProperty('--habr-card', cardColor)
+
+    if (theme === 'dark') {
+      document.body.classList.add('dark-theme')
+    } else {
+      document.body.classList.remove('dark-theme')
+    }
+
+    localStorage.setItem('theme', theme)
+    localStorage.setItem('bgColor', bgColor)
+    localStorage.setItem('textColor', textColor)
+    localStorage.setItem('cardColor', cardColor)
+  }, [theme, bgColor, textColor, cardColor])
+
   const handleLogout = async () => {
     try {
       await logout()
@@ -48,7 +71,11 @@ export default function Navbar() {
 
   const handleSearch = (e) => {
     e.preventDefault()
-    route(`/?search=${encodeURIComponent(searchQuery)}`)
+    const query = searchQuery.trim()
+    if (query) {
+      navigateToSearch(query)
+      setSearchOpen(false)
+    }
   }
 
   return (
@@ -106,12 +133,54 @@ export default function Navbar() {
               </svg>
             </Link>
 
-            <Link className="nav-icon-btn d-none d-md-flex" href="/" aria-label="Конкурсы" title="Конкурсы">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
-              </svg>
-            </Link>
+            <div className="dropdown d-none d-md-block position-relative">
+              <button
+                className="nav-icon-btn"
+                type="button"
+                aria-label="Настройки"
+                title="Настройки"
+                onClick={() => setSettingsOpen((v) => !v)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                  <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.421 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.421-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.116l.094-.318z"/>
+                </svg>
+              </button>
+              {settingsOpen && (
+                <div className="dropdown-menu dropdown-menu-end show settings-dropdown" style={{ right: 0, left: 'auto', minWidth: '280px' }}>
+                  <div className="px-3 py-2">
+                    <div className="mb-3">
+                      <label className="form-label small text-muted mb-1">Тема</label>
+                      <div className="d-flex gap-2">
+                        <button className={`btn btn-sm ${theme === 'light' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => setTheme('light')}>Светлая</button>
+                        <button className={`btn btn-sm ${theme === 'dark' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => setTheme('dark')}>Тёмная</button>
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label small text-muted mb-1">Цвет фона</label>
+                      <div className="d-flex gap-2 align-items-center">
+                        <input type="color" className="form-control form-control-color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={bgColor} onChange={(e) => setBgColor(e.target.value)} style={{ width: '100px' }} />
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label small text-muted mb-1">Цвет текста</label>
+                      <div className="d-flex gap-2 align-items-center">
+                        <input type="color" className="form-control form-control-color" value={textColor} onChange={(e) => setTextColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={textColor} onChange={(e) => setTextColor(e.target.value)} style={{ width: '100px' }} />
+                      </div>
+                    </div>
+                    <div className="mb-0">
+                      <label className="form-label small text-muted mb-1">Цвет карточек</label>
+                      <div className="d-flex gap-2 align-items-center">
+                        <input type="color" className="form-control form-control-color" value={cardColor} onChange={(e) => setCardColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={cardColor} onChange={(e) => setCardColor(e.target.value)} style={{ width: '100px' }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {user ? (
               <div className="dropdown">
@@ -162,12 +231,12 @@ export default function Navbar() {
 
               <div className="habr-offcanvas-section-title">Разработка и инженерия</div>
               {[
-                { icon: '⚙️', label: 'Бэкенд', tagSlug: 'bekend' },
+                { icon: '⚙️', label: 'Бэкенд', tagSlug: 'backend' },
                 { icon: '🖥️', label: 'Фронтенд', tagSlug: 'frontend' },
-                { icon: '📱', label: 'Мобильная разработка', tagSlug: 'mobilnaia-razrabotka' },
+                { icon: '📱', label: 'Мобильная разработка', tagSlug: 'mobile' },
                 { icon: '🎮', label: 'Геймдев', tagSlug: 'gamedev' },
-                { icon: '🧪', label: 'Тестирование', tagSlug: 'testirovanie' },
-                { icon: '🤖', label: 'AI и ML', tagSlug: 'mashinnoe-obuchenie' },
+                { icon: '🧪', label: 'Тестирование', tagSlug: 'testing' },
+                { icon: '🤖', label: 'AI и ML', tagSlug: 'machine-learning' },
                 { icon: '🏭', label: 'Промышленная инженерия', tagSlug: 'engineering' },
               ].map(item => (
                 <button
@@ -185,8 +254,8 @@ export default function Navbar() {
               <div className="habr-offcanvas-section-title">Инфраструктура и данные</div>
               {[
                 { icon: '🛠️', label: 'Администрирование', tagSlug: 'linux' },
-                { icon: '🔒', label: 'Информационная безопасность', tagSlug: 'bezopasnost' },
-                { icon: '📊', label: 'Системный и бизнес-анализ', tagSlug: 'analiz' },
+                { icon: '🔒', label: 'Информационная безопасность', tagSlug: 'security' },
+                { icon: '📊', label: 'Системный и бизнес-анализ', tagSlug: 'analysis' },
               ].map(item => (
                 <button
                   key={item.label}

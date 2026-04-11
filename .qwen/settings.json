@@ -25,7 +25,9 @@
       "Bash(git push)",
       "Bash(c:\\program *)",
       "Bash(\"c:\\program files\\git\\cmd\\git.exe\" *)",
-      "Bash(\"c:\\program files\\git\\bin\\git.exe\" *)"
+      "Bash(\"c:\\program files\\git\\bin\\git.exe\" *)",
+      "Bash(npm install)",
+      "Bash(\\\"c:\\program *)"
     ]
   },
   "$version": 3
