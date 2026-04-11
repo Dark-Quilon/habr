@@ -25,29 +25,28 @@ export default function Navbar() {
     dark: { bg: '#0d1117', text: '#e6edf3', card: '#161b22' }
   }
 
-  // Применяем тему только если нет кастомных цветов
+  // Применяем тему
   const applyTheme = (themeName) => {
     setTheme(themeName)
     const defaults = themeDefaults[themeName]
-    
-    // Если нет сохраненных кастомных цветов, используем дефолтные значения темы
-    if (!localStorage.getItem('customBgColor')) {
-      setBgColor(defaults.bg)
-    }
-    if (!localStorage.getItem('customTextColor')) {
-      setTextColor(defaults.text)
-    }
-    if (!localStorage.getItem('customCardColor')) {
-      setCardColor(defaults.card)
-    }
+    setBgColor(defaults.bg)
+    setTextColor(defaults.text)
+    setCardColor(defaults.card)
   }
 
   // Инициализация цветов при загрузке
   useEffect(() => {
-    const hasCustom = localStorage.getItem('customBgColor') || localStorage.getItem('customTextColor') || localStorage.getItem('customCardColor')
+    const customBg = localStorage.getItem('customBgColor')
+    const customText = localStorage.getItem('customTextColor')
+    const customCard = localStorage.getItem('customCardColor')
     
-    if (!hasCustom) {
-      // Нет кастомных цветов - применяем тему
+    // Если есть кастомные цвета - используем их
+    if (customBg || customText || customCard) {
+      if (customBg) setBgColor(customBg)
+      if (customText) setTextColor(customText)
+      if (customCard) setCardColor(customCard)
+    } else {
+      // Нет кастомных цветов - применяем цвета текущей темы
       const defaults = themeDefaults[theme]
       setBgColor(defaults.bg)
       setTextColor(defaults.text)
@@ -92,7 +91,6 @@ export default function Navbar() {
     }
 
     localStorage.setItem('theme', theme)
-    // Сохраняем только при явном сохранении пользователем
   }, [theme, bgColor, textColor, cardColor])
 
   const handleSaveSettings = () => {
@@ -232,7 +230,7 @@ export default function Navbar() {
                     </div>
                     <div className="d-flex gap-2">
                       <button className="btn btn-sm btn-primary flex-grow-1" onClick={handleSaveSettings}>
-                        {saved ? '✓ Сохранено' : 'Сохранить'}
+                        {saved ? '✓ Применено' : 'Применить'}
                       </button>
                       <button className="btn btn-sm btn-outline-secondary" onClick={handleResetSettings}>Сбросить</button>
                     </div>
