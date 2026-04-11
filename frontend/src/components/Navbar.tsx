@@ -12,11 +12,48 @@ export default function Navbar() {
   const [accountOpen, setAccountOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light')
-  const [bgColor, setBgColor] = useState(() => localStorage.getItem('bgColor') || '#e8e8e8')
-  const [textColor, setTextColor] = useState(() => localStorage.getItem('textColor') || '#333333')
-  const [cardColor, setCardColor] = useState(() => localStorage.getItem('cardColor') || '#ffffff')
+  const [bgColor, setBgColor] = useState(() => localStorage.getItem('customBgColor') || localStorage.getItem('bgColor') || '')
+  const [textColor, setTextColor] = useState(() => localStorage.getItem('customTextColor') || localStorage.getItem('textColor') || '')
+  const [cardColor, setCardColor] = useState(() => localStorage.getItem('customCardColor') || localStorage.getItem('cardColor') || '')
   const [searchQuery, setSearchQuery] = useState('')
   const [tags, setTags] = useState([])
+  const [saved, setSaved] = useState(false)
+
+  // Значения по умолчанию для тем
+  const themeDefaults = {
+    light: { bg: '#e8e8e8', text: '#333333', card: '#ffffff' },
+    dark: { bg: '#0d1117', text: '#e6edf3', card: '#161b22' }
+  }
+
+  // Применяем тему только если нет кастомных цветов
+  const applyTheme = (themeName) => {
+    setTheme(themeName)
+    const defaults = themeDefaults[themeName]
+    
+    // Если нет сохраненных кастомных цветов, используем дефолтные значения темы
+    if (!localStorage.getItem('customBgColor')) {
+      setBgColor(defaults.bg)
+    }
+    if (!localStorage.getItem('customTextColor')) {
+      setTextColor(defaults.text)
+    }
+    if (!localStorage.getItem('customCardColor')) {
+      setCardColor(defaults.card)
+    }
+  }
+
+  // Инициализация цветов при загрузке
+  useEffect(() => {
+    const hasCustom = localStorage.getItem('customBgColor') || localStorage.getItem('customTextColor') || localStorage.getItem('customCardColor')
+    
+    if (!hasCustom) {
+      // Нет кастомных цветов - применяем тему
+      const defaults = themeDefaults[theme]
+      setBgColor(defaults.bg)
+      setTextColor(defaults.text)
+      setCardColor(defaults.card)
+    }
+  }, [])
 
   useEffect(() => {
     const stored = getStoredUser()
@@ -55,10 +92,26 @@ export default function Navbar() {
     }
 
     localStorage.setItem('theme', theme)
-    localStorage.setItem('bgColor', bgColor)
-    localStorage.setItem('textColor', textColor)
-    localStorage.setItem('cardColor', cardColor)
+    // Сохраняем только при явном сохранении пользователем
   }, [theme, bgColor, textColor, cardColor])
+
+  const handleSaveSettings = () => {
+    localStorage.setItem('customBgColor', bgColor)
+    localStorage.setItem('customTextColor', textColor)
+    localStorage.setItem('customCardColor', cardColor)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  const handleResetSettings = () => {
+    localStorage.removeItem('customBgColor')
+    localStorage.removeItem('customTextColor')
+    localStorage.removeItem('customCardColor')
+    const defaults = themeDefaults[theme]
+    setBgColor(defaults.bg)
+    setTextColor(defaults.text)
+    setCardColor(defaults.card)
+  }
 
   const handleLogout = async () => {
     try {
@@ -152,30 +205,36 @@ export default function Navbar() {
                     <div className="mb-3">
                       <label className="form-label small text-muted mb-1">Тема</label>
                       <div className="d-flex gap-2">
-                        <button className={`btn btn-sm ${theme === 'light' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => setTheme('light')}>Светлая</button>
-                        <button className={`btn btn-sm ${theme === 'dark' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => setTheme('dark')}>Тёмная</button>
+                        <button className={`btn btn-sm ${theme === 'light' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => applyTheme('light')}>Светлая</button>
+                        <button className={`btn btn-sm ${theme === 'dark' ? 'btn-primary' : 'btn-outline-secondary'}`} onClick={() => applyTheme('dark')}>Тёмная</button>
                       </div>
                     </div>
                     <div className="mb-3">
                       <label className="form-label small text-muted mb-1">Цвет фона</label>
                       <div className="d-flex gap-2 align-items-center">
-                        <input type="color" className="form-control form-control-color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
-                        <input type="text" className="form-control form-control-sm" value={bgColor} onChange={(e) => setBgColor(e.target.value)} style={{ width: '100px' }} />
+                        <input type="color" className="form-control form-control-color" value={bgColor || themeDefaults[theme].bg} onChange={(e) => setBgColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={bgColor || themeDefaults[theme].bg} onChange={(e) => setBgColor(e.target.value)} style={{ width: '100px' }} />
                       </div>
                     </div>
                     <div className="mb-3">
                       <label className="form-label small text-muted mb-1">Цвет текста</label>
                       <div className="d-flex gap-2 align-items-center">
-                        <input type="color" className="form-control form-control-color" value={textColor} onChange={(e) => setTextColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
-                        <input type="text" className="form-control form-control-sm" value={textColor} onChange={(e) => setTextColor(e.target.value)} style={{ width: '100px' }} />
+                        <input type="color" className="form-control form-control-color" value={textColor || themeDefaults[theme].text} onChange={(e) => setTextColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={textColor || themeDefaults[theme].text} onChange={(e) => setTextColor(e.target.value)} style={{ width: '100px' }} />
                       </div>
                     </div>
-                    <div className="mb-0">
+                    <div className="mb-3">
                       <label className="form-label small text-muted mb-1">Цвет карточек</label>
                       <div className="d-flex gap-2 align-items-center">
-                        <input type="color" className="form-control form-control-color" value={cardColor} onChange={(e) => setCardColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
-                        <input type="text" className="form-control form-control-sm" value={cardColor} onChange={(e) => setCardColor(e.target.value)} style={{ width: '100px' }} />
+                        <input type="color" className="form-control form-control-color" value={cardColor || themeDefaults[theme].card} onChange={(e) => setCardColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={cardColor || themeDefaults[theme].card} onChange={(e) => setCardColor(e.target.value)} style={{ width: '100px' }} />
                       </div>
+                    </div>
+                    <div className="d-flex gap-2">
+                      <button className="btn btn-sm btn-primary flex-grow-1" onClick={handleSaveSettings}>
+                        {saved ? '✓ Сохранено' : 'Сохранить'}
+                      </button>
+                      <button className="btn btn-sm btn-outline-secondary" onClick={handleResetSettings}>Сбросить</button>
                     </div>
                   </div>
                 </div>

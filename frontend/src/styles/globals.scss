@@ -607,3 +607,20 @@ main {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+// Анимация для кнопки сохранения
+@keyframes settings-saved {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.settings-dropdown .btn-primary:active {
+  animation: settings-saved 0.3s ease;
+}
