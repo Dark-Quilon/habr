@@ -12,9 +12,12 @@ export default function Navbar() {
   const [accountOpen, setAccountOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light')
-  const [bgColor, setBgColor] = useState(() => localStorage.getItem('customBgColor') || localStorage.getItem('bgColor') || '')
-  const [textColor, setTextColor] = useState(() => localStorage.getItem('customTextColor') || localStorage.getItem('textColor') || '')
-  const [cardColor, setCardColor] = useState(() => localStorage.getItem('customCardColor') || localStorage.getItem('cardColor') || '')
+  const [bgColor, setBgColor] = useState(() => localStorage.getItem('customBgColor') || '')
+  const [textColor, setTextColor] = useState(() => localStorage.getItem('customTextColor') || '')
+  const [cardColor, setCardColor] = useState(() => localStorage.getItem('customCardColor') || '')
+  const [tempBgColor, setTempBgColor] = useState('')
+  const [tempTextColor, setTempTextColor] = useState('')
+  const [tempCardColor, setTempCardColor] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [tags, setTags] = useState([])
   const [saved, setSaved] = useState(false)
@@ -25,32 +28,42 @@ export default function Navbar() {
     dark: { bg: '#0d1117', text: '#e6edf3', card: '#161b22' }
   }
 
-  // Применяем тему
+  // Получаем текущие активные цвета
+  const getActiveColors = () => {
+    if (bgColor && textColor && cardColor) {
+      return { bg: bgColor, text: textColor, card: cardColor }
+    }
+    return themeDefaults[theme]
+  }
+
+  // Применяем тему - только меняем тему, цвета не трогаем
   const applyTheme = (themeName) => {
     setTheme(themeName)
     const defaults = themeDefaults[themeName]
-    setBgColor(defaults.bg)
-    setTextColor(defaults.text)
-    setCardColor(defaults.card)
+    // Устанавливаем временные цвета темы для предпросмотра
+    setTempBgColor(defaults.bg)
+    setTempTextColor(defaults.text)
+    setTempCardColor(defaults.card)
   }
 
-  // Инициализация цветов при загрузке
+  // Инициализация при загрузке
   useEffect(() => {
     const customBg = localStorage.getItem('customBgColor')
     const customText = localStorage.getItem('customTextColor')
     const customCard = localStorage.getItem('customCardColor')
     
-    // Если есть кастомные цвета - используем их
-    if (customBg || customText || customCard) {
-      if (customBg) setBgColor(customBg)
-      if (customText) setTextColor(customText)
-      if (customCard) setCardColor(customCard)
+    if (customBg && customText && customCard) {
+      setBgColor(customBg)
+      setTextColor(customText)
+      setCardColor(customCard)
+      setTempBgColor(customBg)
+      setTempTextColor(customText)
+      setTempCardColor(customCard)
     } else {
-      // Нет кастомных цветов - применяем цвета текущей темы
       const defaults = themeDefaults[theme]
-      setBgColor(defaults.bg)
-      setTextColor(defaults.text)
-      setCardColor(defaults.card)
+      setTempBgColor(defaults.bg)
+      setTempTextColor(defaults.text)
+      setTempCardColor(defaults.card)
     }
   }, [])
 
@@ -80,9 +93,14 @@ export default function Navbar() {
 
   useEffect(() => {
     const root = document.documentElement
-    root.style.setProperty('--habr-bg', bgColor)
-    root.style.setProperty('--habr-text', textColor)
-    root.style.setProperty('--habr-card', cardColor)
+    // Используем временные цвета (для предпросмотра) или сохраненные
+    const activeBg = tempBgColor || bgColor || themeDefaults[theme].bg
+    const activeText = tempTextColor || textColor || themeDefaults[theme].text
+    const activeCard = tempCardColor || cardColor || themeDefaults[theme].card
+    
+    root.style.setProperty('--habr-bg', activeBg)
+    root.style.setProperty('--habr-text', activeText)
+    root.style.setProperty('--habr-card', activeCard)
 
     if (theme === 'dark') {
       document.body.classList.add('dark-theme')
@@ -91,12 +109,17 @@ export default function Navbar() {
     }
 
     localStorage.setItem('theme', theme)
-  }, [theme, bgColor, textColor, cardColor])
+  }, [theme, bgColor, textColor, cardColor, tempBgColor, tempTextColor, tempCardColor])
 
   const handleSaveSettings = () => {
-    localStorage.setItem('customBgColor', bgColor)
-    localStorage.setItem('customTextColor', textColor)
-    localStorage.setItem('customCardColor', cardColor)
+    // Сохраняем временные цвета как активные
+    setBgColor(tempBgColor)
+    setTextColor(tempTextColor)
+    setCardColor(tempCardColor)
+    
+    localStorage.setItem('customBgColor', tempBgColor)
+    localStorage.setItem('customTextColor', tempTextColor)
+    localStorage.setItem('customCardColor', tempCardColor)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
@@ -105,10 +128,14 @@ export default function Navbar() {
     localStorage.removeItem('customBgColor')
     localStorage.removeItem('customTextColor')
     localStorage.removeItem('customCardColor')
+    setBgColor('')
+    setTextColor('')
+    setCardColor('')
+    
     const defaults = themeDefaults[theme]
-    setBgColor(defaults.bg)
-    setTextColor(defaults.text)
-    setCardColor(defaults.card)
+    setTempBgColor(defaults.bg)
+    setTempTextColor(defaults.text)
+    setTempCardColor(defaults.card)
   }
 
   const handleLogout = async () => {
@@ -210,22 +237,22 @@ export default function Navbar() {
                     <div className="mb-3">
                       <label className="form-label small text-muted mb-1">Цвет фона</label>
                       <div className="d-flex gap-2 align-items-center">
-                        <input type="color" className="form-control form-control-color" value={bgColor || themeDefaults[theme].bg} onChange={(e) => setBgColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
-                        <input type="text" className="form-control form-control-sm" value={bgColor || themeDefaults[theme].bg} onChange={(e) => setBgColor(e.target.value)} style={{ width: '100px' }} />
+                        <input type="color" className="form-control form-control-color" value={tempBgColor || themeDefaults[theme].bg} onChange={(e) => setTempBgColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={tempBgColor || themeDefaults[theme].bg} onChange={(e) => setTempBgColor(e.target.value)} style={{ width: '100px' }} />
                       </div>
                     </div>
                     <div className="mb-3">
                       <label className="form-label small text-muted mb-1">Цвет текста</label>
                       <div className="d-flex gap-2 align-items-center">
-                        <input type="color" className="form-control form-control-color" value={textColor || themeDefaults[theme].text} onChange={(e) => setTextColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
-                        <input type="text" className="form-control form-control-sm" value={textColor || themeDefaults[theme].text} onChange={(e) => setTextColor(e.target.value)} style={{ width: '100px' }} />
+                        <input type="color" className="form-control form-control-color" value={tempTextColor || themeDefaults[theme].text} onChange={(e) => setTempTextColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={tempTextColor || themeDefaults[theme].text} onChange={(e) => setTempTextColor(e.target.value)} style={{ width: '100px' }} />
                       </div>
                     </div>
                     <div className="mb-3">
                       <label className="form-label small text-muted mb-1">Цвет карточек</label>
                       <div className="d-flex gap-2 align-items-center">
-                        <input type="color" className="form-control form-control-color" value={cardColor || themeDefaults[theme].card} onChange={(e) => setCardColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
-                        <input type="text" className="form-control form-control-sm" value={cardColor || themeDefaults[theme].card} onChange={(e) => setCardColor(e.target.value)} style={{ width: '100px' }} />
+                        <input type="color" className="form-control form-control-color" value={tempCardColor || themeDefaults[theme].card} onChange={(e) => setTempCardColor(e.target.value)} style={{ width: '40px', height: '32px' }} />
+                        <input type="text" className="form-control form-control-sm" value={tempCardColor || themeDefaults[theme].card} onChange={(e) => setTempCardColor(e.target.value)} style={{ width: '100px' }} />
                       </div>
                     </div>
                     <div className="d-flex gap-2">
