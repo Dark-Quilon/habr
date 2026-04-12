@@ -12,8 +12,8 @@ USERNAMES = [
 TAGS_POOL = [
     'Python', 'Django', 'JavaScript', 'React', 'Docker', 'Linux',
     'Git', 'API', 'PostgreSQL', 'Redis', 'Nginx', 'DevOps',
-    'Тестирование', 'Безопасность', 'Фронтенд', 'Бэкенд',
-    'Машинное обучение', 'Алгоритмы', 'TypeScript', 'Vue.js',
+    'Testing', 'Security', 'Frontend', 'Backend',
+    'Machine Learning', 'Algorithms', 'TypeScript', 'Vue.js',
     'Kubernetes', 'CI/CD', 'GraphQL', 'MongoDB', 'RabbitMQ',
     'Mobile', 'GameDev', 'Engineering', 'Analysis',
 ]
