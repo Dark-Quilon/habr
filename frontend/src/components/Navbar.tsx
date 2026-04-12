@@ -1,5 +1,5 @@
 import { h } from 'preact'
-import { useState, useEffect } from 'preact/hooks'
+import { useState, useEffect, useRef } from 'preact/hooks'
 import { Link, route } from 'preact-router'
 import { getStoredUser, removeToken, logout, getTags } from '../lib/api'
 import { navigateToTag, navigateToSearch } from '../lib/navigation'
@@ -21,6 +21,19 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('')
   const [tags, setTags] = useState([])
   const [saved, setSaved] = useState(false)
+
+  const settingsRef = useRef(null)
+
+  // Закрытие настроек при клике вне
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (settingsOpen && settingsRef.current && !settingsRef.current.contains(e.target)) {
+        setSettingsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [settingsOpen])
 
   // Значения по умолчанию для тем
   const themeDefaults = {
@@ -272,7 +285,7 @@ export default function Navbar() {
               </svg>
             </Link>
 
-            <div className="dropdown position-relative">
+            <div className="dropdown position-relative" ref={settingsRef}>
               <button
                 className="nav-icon-btn"
                 type="button"
