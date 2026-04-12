@@ -313,15 +313,15 @@ export default function Navbar() {
                 <span>Все потоки</span>
               </Link>
 
-              <div className="habr-offcanvas-section-title">Разработка и инженерия</div>
+              <div className="habr-offcanvas-section-title">Development & Engineering</div>
               {[
-                { icon: '⚙️', label: 'Бэкенд', tagSlug: 'backend' },
-                { icon: '🖥️', label: 'Фронтенд', tagSlug: 'frontend' },
-                { icon: '📱', label: 'Мобильная разработка', tagSlug: 'mobile' },
-                { icon: '🎮', label: 'Геймдев', tagSlug: 'gamedev' },
-                { icon: '🧪', label: 'Тестирование', tagSlug: 'testing' },
-                { icon: '🤖', label: 'AI и ML', tagSlug: 'machine-learning' },
-                { icon: '🏭', label: 'Промышленная инженерия', tagSlug: 'engineering' },
+                { icon: '⚙️', label: 'Backend', tagSlug: 'backend' },
+                { icon: '🖥️', label: 'Frontend', tagSlug: 'frontend' },
+                { icon: '📱', label: 'Mobile Development', tagSlug: 'mobile' },
+                { icon: '🎮', label: 'GameDev', tagSlug: 'gamedev' },
+                { icon: '🧪', label: 'Testing', tagSlug: 'testing' },
+                { icon: '🤖', label: 'AI & ML', tagSlug: 'machine-learning' },
+                { icon: '🏭', label: 'Industrial Engineering', tagSlug: 'engineering' },
               ].map(item => (
                 <button
                   key={item.label}
@@ -335,11 +335,11 @@ export default function Navbar() {
                 </button>
               ))}
 
-              <div className="habr-offcanvas-section-title">Инфраструктура и данные</div>
+              <div className="habr-offcanvas-section-title">Infrastructure & Data</div>
               {[
-                { icon: '🛠️', label: 'Администрирование', tagSlug: 'linux' },
-                { icon: '🔒', label: 'Информационная безопасность', tagSlug: 'security' },
-                { icon: '📊', label: 'Системный и бизнес-анализ', tagSlug: 'analysis' },
+                { icon: '🛠️', label: 'System Administration', tagSlug: 'linux' },
+                { icon: '🔒', label: 'Information Security', tagSlug: 'security' },
+                { icon: '📊', label: 'System & Business Analysis', tagSlug: 'analysis' },
               ].map(item => (
                 <button
                   key={item.label}
