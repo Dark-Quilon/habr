@@ -145,6 +145,61 @@ body.dark-theme {
       background: #1c2333 !important;
     }
   }
+
+  // Пагинация
+  .pagination {
+    .page-item {
+      .page-link {
+        background: #161b22 !important;
+        border-color: #30363d !important;
+        color: #e6edf3 !important;
+
+        &:hover {
+          background: #21262d !important;
+          color: #4db6bc !important;
+        }
+
+        &.active {
+          background: #4db6bc !important;
+          border-color: #4db6bc !important;
+          color: #fff !important;
+        }
+
+        &.disabled {
+          color: #8b949e !important;
+          background: #161b22 !important;
+        }
+      }
+    }
+  }
+
+  // Комментарии
+  .card {
+    background: #161b22 !important;
+    border-color: #30363d !important;
+
+    .card-body {
+      color: #e6edf3 !important;
+
+      p {
+        color: #e6edf3 !important;
+      }
+    }
+  }
+
+  .text-muted {
+    color: #8b949e !important;
+  }
+
+  textarea.form-control {
+    background: #0d1117 !important;
+    border-color: #30363d !important;
+    color: #e6edf3 !important;
+
+    &::placeholder {
+      color: #8b949e !important;
+    }
+  }
 }
 
 main {
