@@ -28,4 +28,7 @@ services:
     dockerContext: ./frontend
     envVars:
       - key: VITE_API_URL
-        value: "PLACEHOLDER"
+        fromService:
+          name: habr-backend
+          type: web
+          property: host
