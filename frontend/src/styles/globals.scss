@@ -608,6 +608,20 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+// На мобильных устройствах - адаптивный dropdown настроек
+@media (max-width: 576px) {
+  .settings-dropdown {
+    position: fixed !important;
+    top: 60px !important;
+    right: 10px !important;
+    left: 10px !important;
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}
+
 // Анимация для кнопки сохранения
 @keyframes settings-saved {
   0% {
