@@ -211,7 +211,7 @@ export default function Navbar() {
               </svg>
             </Link>
 
-            <div className="dropdown d-none d-md-block position-relative">
+            <div className="dropdown position-relative">
               <button
                 className="nav-icon-btn"
                 type="button"
