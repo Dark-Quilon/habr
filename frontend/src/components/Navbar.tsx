@@ -235,14 +235,6 @@ export default function Navbar() {
           </button>
 
           <Link className="navbar-brand fw-bold me-2" href="/">Хабр</Link>
-          <span className="navbar-divider d-none d-md-inline">|</span>
-          <button 
-            className="navbar-all-streams d-none d-md-inline ms-2 btn btn-link text-white text-decoration-none p-0" 
-            onClick={() => { window.history.pushState({}, '', '/'); window.dispatchEvent(new CustomEvent('tagChange', { detail: { tagSlug: '' } })); }}
-            style={{ cursor: 'pointer', background: 'none', border: 'none' }}
-          >
-            Все потоки
-          </button>
           
           <div className="me-auto d-none d-lg-flex align-items-center justify-content-center flex-grow-1">
             <span className="text-white-50 small">🤔 Чему научиться в этом году?</span>
@@ -376,10 +368,6 @@ export default function Navbar() {
               <Link href="/" className="habr-offcanvas-nav-item" onClick={() => { setBurgerOpen(false); window.history.pushState({}, '', '/'); window.dispatchEvent(new CustomEvent('tagChange', { detail: { tagSlug: '' } })); }}>
                 <span className="habr-offcanvas-icon">🆕</span>
                 <span>Что нового</span>
-              </Link>
-              <Link href="/" className="habr-offcanvas-nav-item" onClick={() => { setBurgerOpen(false); window.history.pushState({}, '', '/'); window.dispatchEvent(new CustomEvent('tagChange', { detail: { tagSlug: '' } })); }}>
-                <span className="habr-offcanvas-icon">🌊</span>
-                <span>Все потоки</span>
               </Link>
 
               <div className="habr-offcanvas-section-title">Development & Engineering</div>
