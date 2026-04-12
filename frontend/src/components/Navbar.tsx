@@ -237,7 +237,7 @@ export default function Navbar() {
           <Link className="navbar-brand fw-bold me-2" href="/">Хабр</Link>
           
           <div className="me-auto d-none d-lg-flex align-items-center justify-content-center flex-grow-1">
-            <span className="text-white-50 small">🤔 Чему научиться в этом году?</span>
+            <span className="text-white fw-bold" style={{ fontSize: '1rem' }}>🤔 Чему научиться в этом году?</span>
           </div>
           
           <div className="me-auto d-lg-none" />
