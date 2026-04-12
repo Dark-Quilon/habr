@@ -11,8 +11,6 @@ export default function Write() {
 
       <div className="write-tabs">
         <div className="write-tab active">Самое важное</div>
-        <div className="write-tab">Новые авторы</div>
-        <div className="write-tab">Ожидают приглашения</div>
       </div>
 
       <div className="write-card">
