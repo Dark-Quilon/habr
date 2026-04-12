@@ -54,13 +54,15 @@ export default function ArticleDetail({ slug }) {
           </div>
         )}
 
-        <div className="d-flex align-items-center gap-3 mb-3">
+        <div className="article-card-content" dangerouslySetInnerHTML={{ __html: article.content_html || article.content }} />
+
+        <div className="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
           <VoteButtons article={article} />
           {user && user.username === article.author?.username && (
             <div className="ms-auto d-flex gap-2">
               <Link href={`/articles/${article.slug}/edit`} className="btn btn-sm btn-outline-primary">Редактировать</Link>
-              <button 
-                className="btn btn-sm btn-outline-danger" 
+              <button
+                className="btn btn-sm btn-outline-danger"
                 onClick={async () => {
                   if (confirm('Удалить статью? Это действие нельзя отменить.')) {
                     try {
@@ -79,8 +81,6 @@ export default function ArticleDetail({ slug }) {
             </div>
           )}
         </div>
-
-        <div className="article-card-content" dangerouslySetInnerHTML={{ __html: article.content_html || article.content }} />
       </article>
 
       <CommentSection articleSlug={slug} />
