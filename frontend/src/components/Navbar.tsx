@@ -236,7 +236,13 @@ export default function Navbar() {
 
           <Link className="navbar-brand fw-bold me-2" href="/">Хабр</Link>
           <span className="navbar-divider d-none d-md-inline">|</span>
-          <span className="navbar-all-streams d-none d-md-inline ms-2">Все потоки</span>
+          <button 
+            className="navbar-all-streams d-none d-md-inline ms-2 btn btn-link text-white text-decoration-none p-0" 
+            onClick={() => { window.history.pushState({}, '', '/'); window.dispatchEvent(new CustomEvent('tagChange', { detail: { tagSlug: '' } })); }}
+            style={{ cursor: 'pointer', background: 'none', border: 'none' }}
+          >
+            Все потоки
+          </button>
           
           <div className="me-auto d-none d-lg-flex align-items-center justify-content-center flex-grow-1">
             <span className="text-white-50 small">🤔 Чему научиться в этом году?</span>
