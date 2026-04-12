@@ -28,7 +28,9 @@
       "Bash(\"c:\\program files\\git\\bin\\git.exe\" *)",
       "Bash(npm install)",
       "Bash(\\\"c:\\program *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(findstr *)",
+      "Bash(c:\\progra~1\\git\\cmd\\git.exe *)"
     ]
   },
   "$version": 3
