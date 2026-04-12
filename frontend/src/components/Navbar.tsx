@@ -87,7 +87,31 @@ export default function Navbar() {
 
   useEffect(() => {
     getTags()
-      .then(setTags)
+      .then((fetchedTags) => {
+        // Маппинг русских названий на английские
+        const translationMap: Record<string, string> = {
+          'Фронтенд': 'Frontend',
+          'Бэкенд': 'Backend',
+          'Мобильная разработка': 'Mobile Development',
+          'Геймдев': 'GameDev',
+          'Тестирование': 'Testing',
+          'Алгоритмы': 'Algorithms',
+          'Карьера в IT': 'IT Career',
+          'Искусственный интеллект': 'Artificial Intelligence',
+          'Веб-разработка': 'Web Development',
+          'Администрирование': 'System Administration',
+          'Информационная безопасность': 'Information Security',
+          'Системный и бизнес-анализ': 'System & Business Analysis',
+          'Промышленная инженерия': 'Industrial Engineering',
+        }
+
+        const translatedTags = fetchedTags.map((tag: any) => ({
+          ...tag,
+          name: translationMap[tag.name] || tag.name,
+        }))
+
+        setTags(translatedTags)
+      })
       .catch(() => {})
   }, [])
 
