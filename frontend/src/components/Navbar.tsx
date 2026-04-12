@@ -88,13 +88,38 @@ export default function Navbar() {
   useEffect(() => {
     getTags()
       .then((fetchedTags) => {
-        // Маппинг русских названий на английские
+        // Полный маппинг ВСЕХ русских тегов на английские
         const translationMap: Record<string, string> = {
+          // Технологии (латиница - оставляем как есть)
+          'Python': 'Python',
+          'Django': 'Django',
+          'JavaScript': 'JavaScript',
+          'React': 'React',
+          'Docker': 'Docker',
+          'Linux': 'Linux',
+          'Git': 'Git',
+          'API': 'API',
+          'PostgreSQL': 'PostgreSQL',
+          'Redis': 'Redis',
+          'Nginx': 'Nginx',
+          'DevOps': 'DevOps',
+          'TypeScript': 'TypeScript',
+          'Vue.js': 'Vue.js',
+          'Kubernetes': 'Kubernetes',
+          'CI/CD': 'CI/CD',
+          'GraphQL': 'GraphQL',
+          'MongoDB': 'MongoDB',
+          'RabbitMQ': 'RabbitMQ',
+          'Mobile': 'Mobile',
+          'GameDev': 'GameDev',
+          'Engineering': 'Engineering',
+          'Analysis': 'Analysis',
+          // Русские теги → английский перевод
+          'Тестирование': 'Testing',
+          'Безопасность': 'Security',
           'Фронтенд': 'Frontend',
           'Бэкенд': 'Backend',
-          'Мобильная разработка': 'Mobile Development',
-          'Геймдев': 'GameDev',
-          'Тестирование': 'Testing',
+          'Машинное обучение': 'Machine Learning',
           'Алгоритмы': 'Algorithms',
           'Карьера в IT': 'IT Career',
           'Искусственный интеллект': 'Artificial Intelligence',
@@ -103,6 +128,8 @@ export default function Navbar() {
           'Информационная безопасность': 'Information Security',
           'Системный и бизнес-анализ': 'System & Business Analysis',
           'Промышленная инженерия': 'Industrial Engineering',
+          'Мобильная разработка': 'Mobile Development',
+          'Геймдев': 'GameDev',
         }
 
         const translatedTags = fetchedTags.map((tag: any) => ({
