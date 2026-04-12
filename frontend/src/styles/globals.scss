@@ -108,6 +108,43 @@ body.dark-theme {
     background-color: #161b22 !important;
     border-top-color: #000 !important;
   }
+
+  .write-card {
+    background: #161b22 !important;
+    color: #e6edf3 !important;
+
+    p {
+      color: #e6edf3 !important;
+    }
+  }
+
+  .write-tab {
+    color: #8b949e !important;
+
+    &.active {
+      color: #4db6bc !important;
+    }
+  }
+
+  .write-accent {
+    color: #4db6bc !important;
+  }
+
+  .form-container {
+    background: #161b22 !important;
+  }
+
+  .profile-header {
+    background: #161b22 !important;
+  }
+
+  .notification-item {
+    background: #161b22 !important;
+
+    &.unread {
+      background: #1c2333 !important;
+    }
+  }
 }
 
 main {
