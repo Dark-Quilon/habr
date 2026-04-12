@@ -88,6 +88,8 @@ export default function Navbar() {
   useEffect(() => {
     getTags()
       .then((fetchedTags) => {
+        console.log('📦 Fetched tags from API:', fetchedTags)
+        
         // Полный маппинг ВСЕХ русских тегов на английские
         const translationMap: Record<string, string> = {
           // Технологии (латиница - оставляем как есть)
@@ -132,14 +134,24 @@ export default function Navbar() {
           'Геймдев': 'GameDev',
         }
 
-        const translatedTags = fetchedTags.map((tag: any) => ({
-          ...tag,
-          name: translationMap[tag.name] || tag.name,
-        }))
+        const translatedTags = fetchedTags.map((tag: any) => {
+          const originalName = tag.name
+          const translatedName = translationMap[originalName] || originalName
+          if (originalName !== translatedName) {
+            console.log(`🔄 "${originalName}" → "${translatedName}"`)
+          }
+          return {
+            ...tag,
+            name: translatedName,
+          }
+        })
 
+        console.log('✅ Translated tags:', translatedTags)
         setTags(translatedTags)
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error('❌ Failed to fetch tags:', err)
+      })
   }, [])
 
   useEffect(() => {
