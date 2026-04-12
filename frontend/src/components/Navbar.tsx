@@ -304,11 +304,11 @@ export default function Navbar() {
           <div className="habr-offcanvas-overlay" onClick={() => setBurgerOpen(false)} />
           <div className="habr-offcanvas">
             <div className="habr-offcanvas-inner">
-              <Link href="/" className="habr-offcanvas-nav-item" onClick={() => setBurgerOpen(false)}>
+              <Link href="/" className="habr-offcanvas-nav-item" onClick={() => { setBurgerOpen(false); window.history.pushState({}, '', '/'); window.dispatchEvent(new CustomEvent('tagChange', { detail: { tagSlug: '' } })); }}>
                 <span className="habr-offcanvas-icon">🆕</span>
                 <span>Что нового</span>
               </Link>
-              <Link href="/" className="habr-offcanvas-nav-item" onClick={() => setBurgerOpen(false)}>
+              <Link href="/" className="habr-offcanvas-nav-item" onClick={() => { setBurgerOpen(false); window.history.pushState({}, '', '/'); window.dispatchEvent(new CustomEvent('tagChange', { detail: { tagSlug: '' } })); }}>
                 <span className="habr-offcanvas-icon">🌊</span>
                 <span>Все потоки</span>
               </Link>
@@ -356,17 +356,26 @@ export default function Navbar() {
               <div className="habr-offcanvas-right">
                 <div className="habr-offcanvas-block">
                   <div className="habr-offcanvas-block-title">
-                    Технологии <Link href="/" className="habr-offcanvas-all" onClick={() => setBurgerOpen(false)}>Все →</Link>
+                    Technologies <Link href="/" className="habr-offcanvas-all" onClick={() => setBurgerOpen(false)}>All →</Link>
                   </div>
                   <div className="habr-offcanvas-tags-grid">
-                    {['Python', 'C++', 'Java', 'Go', 'PostgreSQL', 'Rust', 'Linux', 'Kotlin'].map(t => (
+                    {[
+                      { name: 'Python', slug: 'python' },
+                      { name: 'C++', slug: 'cpp' },
+                      { name: 'Java', slug: 'java' },
+                      { name: 'Go', slug: 'go' },
+                      { name: 'PostgreSQL', slug: 'postgresql' },
+                      { name: 'Rust', slug: 'rust' },
+                      { name: 'Linux', slug: 'linux' },
+                      { name: 'Kotlin', slug: 'kotlin' },
+                    ].map(t => (
                       <button
-                        key={t}
+                        key={t.slug}
                         className="habr-offcanvas-tag"
-                        onClick={() => { setBurgerOpen(false); navigateToTag(t.toLowerCase()) }}
+                        onClick={() => { setBurgerOpen(false); navigateToTag(t.slug) }}
                         type="button"
                       >
-                        {t}
+                        {t.name}
                       </button>
                     ))}
                   </div>
@@ -374,7 +383,7 @@ export default function Navbar() {
 
                 <div className="habr-offcanvas-block">
                   <div className="habr-offcanvas-block-title">
-                    Темы <Link href="/" className="habr-offcanvas-all" onClick={() => setBurgerOpen(false)}>Все →</Link>
+                    Topics <Link href="/" className="habr-offcanvas-all" onClick={() => setBurgerOpen(false)}>All →</Link>
                   </div>
                   <div className="habr-offcanvas-tags-grid">
                     {tags.length > 0
@@ -388,7 +397,7 @@ export default function Navbar() {
                             {tag.name}
                           </button>
                         ))
-                      : ['Карьера в IT', 'Искусственный интеллект', 'Веб-разработка', 'Алгоритмы'].map(t => (
+                      : ['IT Career', 'Artificial Intelligence', 'Web Development', 'Algorithms'].map(t => (
                           <span key={t} className="habr-offcanvas-tag">{t}</span>
                         ))
                     }
