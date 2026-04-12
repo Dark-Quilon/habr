@@ -1,33 +1,30 @@
 import { h } from 'preact'
 import { Link } from 'preact-router'
-import { navigateToTag } from '../lib/navigation'
+import { getStoredUser } from '../lib/api'
 
 export default function Footer() {
+  const user = getStoredUser()
+
   return (
     <footer className="habr-footer">
       <div className="container">
         <div className="row">
           <div className="col-md-3 mb-3">
-            <div className="habr-footer-title">Проекты</div>
+            <div className="habr-footer-title">Ваш аккаунт</div>
             <ul className="list-unstyled">
-              <li><Link href="/">Habr</Link></li>
-              <li><Link href="/?search=Q%26A">Q&A</Link></li>
-            </ul>
-          </div>
-          <div className="col-md-3 mb-3">
-            <div className="habr-footer-title">Разработка</div>
-            <ul className="list-unstyled">
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('backend')} type="button">Бэкенд</button></li>
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('frontend')} type="button">Фронтенд</button></li>
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('mobile')} type="button">Мобильная</button></li>
-            </ul>
-          </div>
-          <div className="col-md-3 mb-3">
-            <div className="habr-footer-title">Инфраструктура</div>
-            <ul className="list-unstyled">
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('linux')} type="button">Администрирование</button></li>
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('security')} type="button">Безопасность</button></li>
-              <li><button className="footer-tag-btn" onClick={() => navigateToTag('devops')} type="button">DevOps</button></li>
+              {user ? (
+                <>
+                  <li><Link href={`/profile/${user.username}`}>Профиль</Link></li>
+                  <li><Link href="/feed">Лента</Link></li>
+                  <li><Link href="/settings">Настройки</Link></li>
+                  <li><Link href="/pwa">ППА</Link></li>
+                </>
+              ) : (
+                <>
+                  <li><Link href="/login">Войти</Link></li>
+                  <li><Link href="/register">Регистрация</Link></li>
+                </>
+              )}
             </ul>
           </div>
           <div className="col-md-3 mb-3">
