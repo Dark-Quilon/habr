@@ -16,7 +16,6 @@ export default function Footer() {
                 <>
                   <li><Link href={`/profile/${user.username}`}>Профиль</Link></li>
                   <li><Link href="/feed">Лента</Link></li>
-                  <li><Link href="/settings">Настройки</Link></li>
                   <li><Link href="/pwa">ППА</Link></li>
                 </>
               ) : (
