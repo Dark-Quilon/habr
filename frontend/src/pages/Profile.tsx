@@ -70,7 +70,7 @@ export default function Profile({ username }) {
             </button>
           )}
           {isOwnProfile && (
-            <Link href="/profile/edit" className="btn btn-outline-secondary btn-sm ms-2">Изменить</Link>
+            <Link href="/profile/me" className="btn btn-outline-secondary btn-sm ms-2">Изменить</Link>
           )}
         </div>
       </div>
