@@ -60,6 +60,7 @@ export default function Profile({ username }) {
         )}
         <div>
           <h2 className="mb-1">{profile.user.display_name || username}</h2>
+          <p className="text-muted mb-2">@{username}</p>
           {profile.bio && <p className="text-muted mb-2">{profile.bio}</p>}
           <p className="text-muted mb-2">Подписчиков: {followersCount}</p>
           {currentUser && currentUser.username !== username && (
