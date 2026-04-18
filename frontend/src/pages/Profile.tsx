@@ -11,6 +11,7 @@ export default function Profile({ username }) {
   const [followersCount, setFollowersCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const currentUser = getStoredUser()
+  const isOwnProfile = currentUser && currentUser.username === username
 
   useEffect(() => {
     loadProfile()
@@ -67,6 +68,9 @@ export default function Profile({ username }) {
             <button className={`btn ${isFollowing ? 'btn-outline-secondary' : 'btn-primary'} btn-sm`} onClick={handleFollow}>
               {isFollowing ? 'Отписаться' : 'Подписаться'}
             </button>
+          )}
+          {isOwnProfile && (
+            <Link href="/profile/edit" className="btn btn-outline-secondary btn-sm ms-2">Изменить</Link>
           )}
         </div>
       </div>

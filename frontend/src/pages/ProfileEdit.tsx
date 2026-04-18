@@ -6,6 +6,8 @@ import { getMyProfile, updateMyProfile, getStoredUser } from '../lib/api'
 export default function ProfileEdit() {
   const [bio, setBio] = useState('')
   const [avatar, setAvatar] = useState(null)
+  const [username, setUsername] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const [loading, setLoading] = useState(false)
   const user = getStoredUser()
 
@@ -18,6 +20,8 @@ export default function ProfileEdit() {
     getMyProfile()
       .then(data => {
         setBio(data.bio || '')
+        setUsername(data.user.username || '')
+        setDisplayName(data.user.display_name || '')
       })
       .catch(() => {})
   }, [])
@@ -26,10 +30,15 @@ export default function ProfileEdit() {
     e.preventDefault()
     setLoading(true)
     try {
-      const data = { bio }
+      const data: any = { bio }
+      if (username !== user.username) data.username = username
+      if (displayName !== (user.display_name || '')) data.display_name = displayName
       if (avatar) data.avatar = avatar
       await updateMyProfile(data)
-      route(`/profile/${user.username}`)
+      if (username !== user.username) {
+        localStorage.setItem('user', JSON.stringify({ ...user, username }))
+      }
+      route(`/profile/${username || user.username}`)
     } catch (err) {
       alert('Ошибка обновления профиля')
     }
@@ -41,6 +50,14 @@ export default function ProfileEdit() {
       <div className="form-container">
         <h2 className="mb-4">Редактировать профиль</h2>
         <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Имя</label>
+            <input type="text" className="form-control" value={displayName} onInput={(e) => setDisplayName(e.target.value)} />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Логин</label>
+            <input type="text" className="form-control" value={username} onInput={(e) => setUsername(e.target.value)} />
+          </div>
           <div className="mb-3">
             <label className="form-label">О себе</label>
             <textarea className="form-control" rows="4" value={bio} onInput={(e) => setBio(e.target.value)} />

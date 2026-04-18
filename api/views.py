@@ -216,7 +216,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     def me(self, request):
         profile = get_object_or_404(Profile, user=request.user)
         if request.method == 'PATCH':
-            serializer = ProfileSerializer(profile, data=request.data, partial=True, context={'request': request})
+            serializer = ProfileUpdateSerializer(profile, data=request.data, partial=True, context={'request': request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)

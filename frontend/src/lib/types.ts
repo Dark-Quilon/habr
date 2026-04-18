@@ -60,6 +60,8 @@ export interface Profile {
 export interface ProfileUpdateData {
   bio?: string
   avatar?: File
+  username?: string
+  display_name?: string
 }
 
 export interface Notification {

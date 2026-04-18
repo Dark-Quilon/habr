@@ -18,6 +18,19 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.first_name or obj.username
 
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    display_name = serializers.CharField(source='first_name', required=False, allow_blank=True)
+    
+    class Meta:
+        model = User
+        fields = ['username', 'display_name']
+    
+    def validate_username(self, value):
+        if self.instance and User.objects.exclude(pk=self.instance.pk).filter(username=value).exists():
+            raise serializers.ValidationError('Это имя пользователя уже занято')
+        return value
+
+
 # 2.2
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -117,6 +130,34 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['user', 'avatar', 'bio', 'followers_count', 'is_following']
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    display_name = serializers.CharField(source='user.first_name', required=False, allow_blank=True)
+    username = serializers.CharField(source='user.username', required=False)
+    
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio', 'username', 'display_name']
+    
+    def validate_username(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError('Это имя пользователя уже занято')
+        return value
+    
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+        if user_data:
+            username = user_data.get('username')
+            first_name = user_data.get('first_name')
+            if username:
+                instance.user.username = username
+            if first_name is not None:
+                instance.user.first_name = first_name
+            instance.user.save()
+        
+        return super().update(instance, validated_data)
 
 
 # 2.8

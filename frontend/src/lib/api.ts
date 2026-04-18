@@ -150,10 +150,15 @@ export async function getMyProfile(): Promise<Profile> {
 }
 
 export async function updateMyProfile(data: ProfileUpdateData): Promise<Profile> {
-  if (data.avatar instanceof File) {
+  const hasFile = data.avatar instanceof File
+  const hasUserFields = data.username !== undefined || data.display_name !== undefined
+  
+  if (hasFile || hasUserFields) {
     const form = new FormData()
     if (data.bio !== undefined) form.append('bio', data.bio)
-    form.append('avatar', data.avatar)
+    if (data.username !== undefined) form.append('username', data.username)
+    if (data.display_name !== undefined) form.append('display_name', data.display_name)
+    if (data.avatar instanceof File) form.append('avatar', data.avatar)
 
     const token = getToken()
     const headers: Record<string, string> = {}
