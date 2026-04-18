@@ -20,7 +20,7 @@
 <div>
     <h2><a href="{% url 'article_detail' article.slug %}">{{ article.title }}</a></h2>
     <p>
-        <a href="{% url 'profile' article.author.username %}">{{ article.author.username }}</a> |
+        <a href="{% url 'profile' article.author.username %}">{{ article.author.first_name|default:article.author.username }}</a> |
         {{ article.created_at|date:"d.m.Y" }} |
         Просмотры: {{ article.views }} |
         Рейтинг: {{ article.rating }}

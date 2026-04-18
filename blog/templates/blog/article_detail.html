@@ -5,7 +5,7 @@
 <article>
     <h1>{{ article.title }}</h1>
     <p>
-        <a href="{% url 'profile' article.author.username %}">{{ article.author.username }}</a> |
+        <a href="{% url 'profile' article.author.username %}">{{ article.author.first_name|default:article.author.username }}</a> |
         {{ article.created_at|date:"d.m.Y" }} |
         Просмотры: {{ article.views }} |
         Рейтинг: {{ article.rating }}
@@ -43,7 +43,7 @@
 {% for comment in article.comments.all %}
 <div>
     <strong>
-        <a href="{% url 'profile' comment.author.username %}">{{ comment.author.username }}</a>
+        <a href="{% url 'profile' comment.author.username %}">{{ comment.author.first_name|default:comment.author.username }}</a>
     </strong> — {{ comment.created_at|date:"d.m.Y H:i" }}
     <p>{{ comment.content }}</p>
     {% if user == comment.author %}

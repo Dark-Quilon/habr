@@ -7,10 +7,15 @@ from django.utils.safestring import mark_safe
 
 # 2.1
 class UserSerializer(serializers.ModelSerializer):
+    display_name = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
-        fields = ['id', 'username']
+        fields = ['id', 'username', 'display_name']
         read_only_fields = ['id', 'username']
+    
+    def get_display_name(self, obj):
+        return obj.first_name or obj.username
 
 
 # 2.2
@@ -127,12 +132,13 @@ class NotificationSerializer(serializers.ModelSerializer):
 # 2.9
 class RegisterSerializer(serializers.Serializer):
     username = serializers.CharField()
+    display_name = serializers.CharField(required=False, allow_blank=True)
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError('Пользователь с таким именем уже существует.')
+            raise serializers.ValidationError('Пользователь с таким логином уже существует.')
         return value
 
     def validate(self, data):

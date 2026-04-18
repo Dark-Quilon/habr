@@ -30,12 +30,23 @@ class RegisterView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         data = serializer.validated_data
-        user = User.objects.create_user(data['username'], password=data['password1'])
+        user = User.objects.create_user(
+            username=data['username'],
+            password=data['password1'],
+            first_name=data.get('display_name', '')
+        )
         Profile.objects.get_or_create(user=user)
         token, _ = Token.objects.get_or_create(user=user)
 
         return Response(
-            {'token': token.key, 'user': {'id': user.id, 'username': user.username}},
+            {
+                'token': token.key,
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'display_name': user.first_name or user.username
+                }
+            },
             status=status.HTTP_201_CREATED,
         )
 
@@ -57,7 +68,14 @@ class LoginView(APIView):
             )
 
         token, _ = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'user': {'id': user.id, 'username': user.username}})
+        return Response({
+            'token': token.key,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'display_name': user.first_name or user.username
+            }
+        })
 
 
 class LogoutView(APIView):
@@ -73,7 +91,11 @@ class MeView(APIView):
 
     def get(self, request):
         user = request.user
-        return Response({'id': user.id, 'username': user.username})
+        return Response({
+            'id': user.id,
+            'username': user.username,
+            'display_name': user.first_name or user.username
+        })
 
 
 class ArticleViewSet(ModelViewSet):

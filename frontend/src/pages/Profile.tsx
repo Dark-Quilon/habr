@@ -55,11 +55,11 @@ export default function Profile({ username }) {
           <img src={profile.avatar} alt={username} className="profile-avatar" />
         ) : (
           <div className="profile-avatar bg-secondary d-flex align-items-center justify-content-center text-white fs-2">
-            {username[0]?.toUpperCase()}
+            {(profile.user.display_name || username)[0]?.toUpperCase()}
           </div>
         )}
         <div>
-          <h2 className="mb-1">{username}</h2>
+          <h2 className="mb-1">{profile.user.display_name || username}</h2>
           {profile.bio && <p className="text-muted mb-2">{profile.bio}</p>}
           <p className="text-muted mb-2">Подписчиков: {followersCount}</p>
           {currentUser && currentUser.username !== username && (

@@ -202,10 +202,10 @@ export async function login(username: string, password: string): Promise<AuthRes
   })
 }
 
-export async function register(username: string, password1: string, password2: string): Promise<AuthResponse> {
+export async function register(username: string, displayName: string, password1: string, password2: string): Promise<AuthResponse> {
   return apiFetch<AuthResponse>('/auth/register/', {
     method: 'POST',
-    body: JSON.stringify({ username, password1, password2 }),
+    body: JSON.stringify({ username, display_name: displayName, password1, password2 }),
   })
 }
 

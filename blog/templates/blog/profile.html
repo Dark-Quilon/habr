@@ -1,7 +1,7 @@
 {% extends 'blog/base.html' %}
-{% block title %}{{ author.username }}{% endblock %}
+{% block title %}{{ author.first_name|default:author.username }}{% endblock %}
 {% block content %}
-<h1>{{ author.username }}</h1>
+<h1>{{ author.first_name|default:author.username }}</h1>
 {% if profile.avatar %}
 <img src="{{ profile.avatar.url }}" alt="аватар" width="100">
 {% endif %}
