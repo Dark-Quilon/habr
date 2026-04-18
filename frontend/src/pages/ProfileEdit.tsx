@@ -32,13 +32,18 @@ export default function ProfileEdit() {
     try {
       const data: any = { bio }
       if (username !== user.username) data.username = username
-      if (displayName !== (user.display_name || '')) data.display_name = displayName
+      const storedUser = JSON.parse(localStorage.getItem('user') || '{}')
+      if (displayName !== (storedUser.display_name || '')) data.display_name = displayName
       if (avatar) data.avatar = avatar
-      await updateMyProfile(data)
-      if (username !== user.username) {
-        localStorage.setItem('user', JSON.stringify({ ...user, username }))
+      const updatedProfile = await updateMyProfile(data)
+      if (username !== user.username || data.display_name) {
+        localStorage.setItem('user', JSON.stringify({ 
+          ...user, 
+          username: data.username || user.username,
+          display_name: updatedProfile.user.display_name 
+        }))
       }
-      route(`/profile/${username || user.username}`)
+      route(`/profile/${data.username || user.username}`)
     } catch (err) {
       alert('Ошибка обновления профиля')
     }
