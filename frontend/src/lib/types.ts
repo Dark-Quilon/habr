@@ -51,6 +51,7 @@ export interface Comment {
 export interface Profile {
   user: User
   avatar: string | null
+  avatar_url: string | null
   bio: string
   is_following?: boolean
   followers_count?: number
@@ -62,6 +63,7 @@ export interface ProfileUpdateData {
   avatar?: File
   username?: string
   display_name?: string
+  avatar_url?: string
 }
 
 export interface Notification {

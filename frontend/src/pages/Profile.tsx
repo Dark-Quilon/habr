@@ -52,8 +52,8 @@ export default function Profile({ username }) {
   return (
     <div className="container py-4">
       <div className="profile-header">
-        {profile.avatar ? (
-          <img src={profile.avatar} alt={username} className="profile-avatar" />
+        {profile.avatar || profile.avatar_url ? (
+          <img src={profile.avatar_url || profile.avatar} alt={username} className="profile-avatar" />
         ) : (
           <div className="profile-avatar bg-secondary d-flex align-items-center justify-content-center text-white fs-2">
             {(profile.user.display_name || username)[0]?.toUpperCase()}

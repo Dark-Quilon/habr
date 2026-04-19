@@ -129,6 +129,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
+        fields = ['user', 'avatar', 'avatar_url', 'bio', 'followers_count', 'is_following']
+
+    class Meta:
+        model = Profile
         fields = ['user', 'avatar', 'bio', 'followers_count', 'is_following']
 
 
@@ -160,9 +164,9 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         
         avatar_url = validated_data.get('avatar_url')
         if avatar_url:
-            instance.avatar = avatar_url
-        elif avatar_url == '' and not validated_data.get('avatar'):
-            instance.avatar = None
+            instance.avatar_url = avatar_url
+        elif avatar_url == '':
+            instance.avatar_url = None
         
         return super().update(instance, validated_data)
 
