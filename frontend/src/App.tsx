@@ -14,6 +14,7 @@ import Feed from './pages/Feed'
 import Notifications from './pages/Notifications'
 import Write from './pages/Write'
 import Reports from './pages/Reports'
+import About from './pages/About'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -44,6 +45,7 @@ export default function App() {
           <Notifications path="/notifications" />
           <Write path="/write" />
           <Reports path="/reports" />
+          <About path="/about" />
           <NotFound default />
         </Router>
       </main>
