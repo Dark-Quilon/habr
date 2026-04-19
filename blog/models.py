@@ -92,6 +92,34 @@ class Vote(models.Model):
         unique_together = ('article', 'user')
 
 
+class Report(models.Model):
+    REASON_SPAM = 'spam'
+    REASON_ABUSE = 'abuse'
+    REASON_COPYRIGHT = 'copyright'
+    REASON_OTHER = 'other'
+    REASON_CHOICES = [
+        (REASON_SPAM, 'Спам'),
+        (REASON_ABUSE, 'Оскорбление'),
+        (REASON_COPYRIGHT, 'Нарушение авторских прав'),
+        (REASON_OTHER, 'Другое'),
+    ]
+
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='reports', null=True, blank=True)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='reports', null=True, blank=True)
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reported')
+    reason = models.CharField(max_length=20, choices=REASON_CHOICES)
+    text = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        target = self.article or self.comment
+        return f'Report by {self.reporter.username} on {target}'
+
+
 class Follow(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')

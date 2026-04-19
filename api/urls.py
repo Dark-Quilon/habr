@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from api.views import (
     RegisterView, LoginView, LogoutView, MeView,
     ArticleViewSet, CommentViewSet, TagViewSet, ProfileViewSet, NotificationViewSet,
+    ReportViewSet,
 )
 
 router = DefaultRouter()
@@ -11,6 +12,7 @@ router.register('articles', ArticleViewSet, basename='article')
 router.register('tags', TagViewSet, basename='tag')
 router.register('profiles', ProfileViewSet, basename='profile')
 router.register('notifications', NotificationViewSet, basename='notification')
+router.register('reports', ReportViewSet, basename='report')
 
 urlpatterns = [
     path('', include(router.urls)),

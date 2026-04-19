@@ -199,6 +199,31 @@ export async function markNotificationsRead(): Promise<MarkReadResponse> {
   })
 }
 
+// Репорты
+export interface Report {
+  id: number
+  article: number | null
+  comment: number | null
+  reason: string
+  text: string
+  created_at: string
+  resolved: boolean
+}
+
+export interface ReportData {
+  article?: number
+  comment?: number
+  reason: string
+  text?: string
+}
+
+export async function createReport(data: ReportData): Promise<Report> {
+  return apiFetch<Report>('/reports/', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
 // Аутентификация
 export async function login(username: string, password: string): Promise<AuthResponse> {
   return apiFetch<AuthResponse>('/auth/login/', {

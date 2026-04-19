@@ -1,7 +1,7 @@
 import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
 import { Link, route } from 'preact-router'
-import { getArticle, getStoredUser } from '../lib/api'
+import { getArticle, getStoredUser, createReport } from '../lib/api'
 import { navigateToTag } from '../lib/navigation'
 import VoteButtons from '../components/VoteButtons'
 import CommentSection from '../components/CommentSection'
@@ -58,6 +58,26 @@ export default function ArticleDetail({ slug }) {
 
         <div className="d-flex align-items-center gap-3 mt-4 pt-3 border-top">
           <VoteButtons article={article} />
+          {user && user.username !== article.author?.username && (
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={async () => {
+                const reason = prompt('Причина: spam, abuse, copyright, other')
+                const text = prompt('Комментарий (необязательно):')
+                if (reason) {
+                  try {
+                    await createReport({ article: article.id, reason, text: text || '' })
+                    alert('Жалоба отправлена')
+                  } catch (err) {
+                    console.error('Report error:', err)
+                    alert('Ошибка при отправке жалобы')
+                  }
+                }
+              }}
+            >
+              Пожаловаться
+            </button>
+          )}
           {user && user.username === article.author?.username && (
             <div className="ms-auto d-flex gap-2">
               <Link href={`/articles/${article.slug}/edit`} className="btn btn-sm btn-outline-primary">Редактировать</Link>

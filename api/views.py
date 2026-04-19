@@ -11,11 +11,12 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 
-from blog.models import Profile, Article, Vote, Follow, Tag, Comment, Notification
+from blog.models import Profile, Article, Vote, Follow, Tag, Comment, Notification, Report
 from api.serializers import (
     RegisterSerializer, LoginSerializer,
     ArticleListSerializer, ArticleDetailSerializer, ArticleWriteSerializer,
     TagSerializer, CommentSerializer, ProfileSerializer, NotificationSerializer,
+    ReportSerializer,
 )
 from api.permissions import IsAuthorOrReadOnly, IsCommentAuthorOrReadOnly
 from api.pagination import StandardPagination
@@ -255,3 +256,17 @@ class NotificationViewSet(mixins.ListModelMixin, GenericViewSet):
     def mark_read(self, request):
         count = Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
         return Response({'marked': count})
+
+
+# --- Task 10: ReportViewSet ---
+
+class ReportViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet):
+    serializer_class = ReportSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = StandardPagination
+
+    def get_queryset(self):
+        return Report.objects.all().select_related('reporter', 'article__author', 'comment__article')
+
+    def perform_create(self, serializer):
+        serializer.save(reporter=self.request.user)

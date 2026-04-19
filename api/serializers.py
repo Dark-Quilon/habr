@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from blog.models import Profile, Tag, Article, Comment, Follow, Notification
+from blog.models import Profile, Tag, Article, Comment, Follow, Notification, Report
 import markdown
 from django.utils.safestring import mark_safe
 
@@ -191,3 +191,10 @@ class RegisterSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ['id', 'article', 'comment', 'reason', 'text', 'created_at', 'resolved']
+        read_only_fields = ['id', 'created_at', 'resolved']
