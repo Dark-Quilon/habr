@@ -131,10 +131,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['user', 'avatar', 'avatar_url', 'bio', 'followers_count', 'is_following']
 
-    class Meta:
-        model = Profile
-        fields = ['user', 'avatar', 'bio', 'followers_count', 'is_following']
-
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     display_name = serializers.CharField(source='user.first_name', required=False, allow_blank=True)
