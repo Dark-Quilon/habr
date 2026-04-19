@@ -129,17 +129,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user', 'avatar', 'avatar_url', 'bio', 'followers_count', 'is_following']
+        fields = ['user', 'avatar', 'bio', 'followers_count', 'is_following']
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     display_name = serializers.CharField(source='user.first_name', required=False, allow_blank=True)
     username = serializers.CharField(source='user.username', required=False)
-    avatar_url = serializers.CharField(required=False, allow_blank=True)
     
     class Meta:
         model = Profile
-        fields = ['avatar', 'bio', 'username', 'display_name', 'avatar_url']
+        fields = ['avatar', 'bio', 'username', 'display_name']
     
     def validate_username(self, value):
         user = self.context['request'].user
@@ -157,12 +156,6 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
             if first_name is not None:
                 instance.user.first_name = first_name
             instance.user.save()
-        
-        avatar_url = validated_data.get('avatar_url')
-        if avatar_url:
-            instance.avatar_url = avatar_url
-        elif avatar_url == '':
-            instance.avatar_url = None
         
         return super().update(instance, validated_data)
 
