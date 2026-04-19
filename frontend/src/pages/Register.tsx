@@ -5,6 +5,7 @@ import { register, setToken } from '../lib/api'
 
 export default function Register() {
   const [username, setUsername] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const [password1, setPassword1] = useState('')
   const [password2, setPassword2] = useState('')
   const [error, setError] = useState('')
@@ -17,9 +18,13 @@ export default function Register() {
       setError('Пароли не совпадают')
       return
     }
+    if (!displayName) {
+      setError('Введите имя')
+      return
+    }
     setLoading(true)
     try {
-      const data = await register(username, password1, password2)
+      const data = await register(username, displayName, password1, password2)
       setToken(data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
       route('/')
@@ -39,6 +44,10 @@ export default function Register() {
           <div className="mb-3">
             <label className="form-label">Имя пользователя</label>
             <input type="text" className="form-control" value={username} onInput={(e) => setUsername(e.target.value)} required />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Отображаемое имя</label>
+            <input type="text" className="form-control" value={displayName} onInput={(e) => setDisplayName(e.target.value)} placeholder="Как вас зовут?" required />
           </div>
           <div className="mb-3">
             <label className="form-label">Пароль</label>
