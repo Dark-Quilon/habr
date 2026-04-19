@@ -13,6 +13,7 @@ import ProfileEdit from './pages/ProfileEdit'
 import Feed from './pages/Feed'
 import Notifications from './pages/Notifications'
 import Write from './pages/Write'
+import Reports from './pages/Reports'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -42,6 +43,7 @@ export default function App() {
           <Feed path="/feed" />
           <Notifications path="/notifications" />
           <Write path="/write" />
+          <Reports path="/reports" />
           <NotFound default />
         </Router>
       </main>
