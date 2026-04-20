@@ -1,7 +1,7 @@
 import { h } from 'preact'
 import { useState, useEffect } from 'preact/hooks'
 import { Link } from 'preact-router'
-import { getProfile, followUser, getStoredUser } from '../lib/api'
+import { getProfile, getMyProfile, followUser, getStoredUser } from '../lib/api'
 import ArticleList from '../components/ArticleList'
 
 export default function Profile({ username }) {
@@ -11,7 +11,7 @@ export default function Profile({ username }) {
   const [followersCount, setFollowersCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const currentUser = getStoredUser()
-  const isOwnProfile = currentUser && currentUser.username === username
+  const isOwnProfile = !username || username === 'me' || (currentUser && currentUser.username === username)
 
   useEffect(() => {
     loadProfile()
@@ -20,7 +20,12 @@ export default function Profile({ username }) {
   const loadProfile = async () => {
     setLoading(true)
     try {
-      const data = await getProfile(username)
+      let data
+      if (username === 'me') {
+        data = await getMyProfile()
+      } else {
+        data = await getProfile(username)
+      }
       setProfile(data)
       setArticles(data.articles || [])
       setIsFollowing(data.is_following || false)
@@ -52,25 +57,25 @@ export default function Profile({ username }) {
   return (
     <div className="container py-4">
       <div className="profile-header">
-        {profile.avatar || profile.avatar_url ? (
-          <img src={profile.avatar_url || profile.avatar} alt={username} className="profile-avatar" />
+        {(profile.avatar || profile.avatar_url) ? (
+          <img src={profile.avatar_url || profile.avatar} alt={profile.user.username} className="profile-avatar" />
         ) : (
           <div className="profile-avatar bg-secondary d-flex align-items-center justify-content-center text-white fs-2">
-            {(profile.user.display_name || username)[0]?.toUpperCase()}
+            {(profile.user.display_name || profile.user.username)[0]?.toUpperCase()}
           </div>
         )}
         <div>
-          <h2 className="mb-1">{profile.user.display_name || username}</h2>
-          <p className="text-muted mb-2">@{username}</p>
+          <h2 className="mb-1">{profile.user.display_name || profile.user.username}</h2>
+          <p className="text-muted mb-2">@{profile.user.username}</p>
           {profile.bio && <p className="text-muted mb-2">{profile.bio}</p>}
           <p className="text-muted mb-2">Подписчиков: {followersCount}</p>
-          {currentUser && currentUser.username !== username && (
+          {currentUser && !isOwnProfile && (
             <button className={`btn ${isFollowing ? 'btn-outline-secondary' : 'btn-primary'} btn-sm`} onClick={handleFollow}>
               {isFollowing ? 'Отписаться' : 'Подписаться'}
             </button>
           )}
           {isOwnProfile && (
-            <Link href="/profile/me" className="btn btn-outline-secondary btn-sm ms-2">Изменить</Link>
+            <Link href="/profile/edit" className="btn btn-outline-secondary btn-sm ms-2">Изменить</Link>
           )}
         </div>
       </div>

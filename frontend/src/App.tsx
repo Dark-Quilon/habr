@@ -39,7 +39,7 @@ export default function App() {
           <ArticleEdit path="/articles/:slug/edit" />
           <Login path="/login" />
           <Register path="/register" />
-          <ProfileEdit path="/profile/me" />
+          <ProfileEdit path="/profile/edit" />
           <Profile path="/profile/:username" />
           <Feed path="/feed" />
           <Notifications path="/notifications" />
