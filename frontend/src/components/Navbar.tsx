@@ -359,7 +359,7 @@ export default function Navbar() {
                 </button>
                 {accountOpen && (
                   <ul className="dropdown-menu dropdown-menu-end show" style={{ right: 0, left: 'auto' }}>
-                    <li><Link className="dropdown-item" href={`/profile/${user.username}`} onClick={() => setAccountOpen(false)}>Профиль</Link></li>
+                    <li><Link className="dropdown-item" href="/profile/me" onClick={() => setAccountOpen(false)}>Профиль</Link></li>
                     <li><Link className="dropdown-item" href="/notifications" onClick={() => setAccountOpen(false)}>Уведомления</Link></li>
                     <li><hr className="dropdown-divider" /></li>
                     <li><button className="dropdown-item" type="button" onClick={() => { setAccountOpen(false); handleLogout() }}>Выйти</button></li>

@@ -14,7 +14,7 @@ export default function Footer() {
             <ul className="list-unstyled">
               {user ? (
                 <>
-                  <li><Link href={`/profile/${user.username}`}>Профиль</Link></li>
+                  <li><Link href="/profile/me">Профиль</Link></li>
                   <li><Link href="/feed">Лента</Link></li>
                 </>
               ) : (

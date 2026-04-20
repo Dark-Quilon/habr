@@ -43,7 +43,7 @@ export default function ProfileEdit() {
           display_name: updatedProfile.user.display_name 
         }))
       }
-      route(`/profile/${data.username || user.username}`)
+      route('/profile/me')
     } catch (err) {
       alert('Ошибка обновления профиля')
     }
