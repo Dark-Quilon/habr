@@ -44,8 +44,9 @@ export default function ProfileEdit() {
         }))
       }
       route('/profile/me')
-    } catch (err) {
-      alert('Ошибка обновления профиля')
+    } catch (err: any) {
+      console.error('Profile update error:', err)
+      alert(err?.message || 'Ошибка обновления профиля')
     }
     setLoading(false)
   }
