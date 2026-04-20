@@ -138,7 +138,16 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Profile
-        fields = ['avatar', 'bio', 'username', 'display_name']
+        fields = ['user', 'avatar', 'bio', 'username', 'display_name']
+    
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['user'] = {
+            'id': instance.user.id,
+            'username': instance.user.username,
+            'display_name': instance.user.first_name or instance.user.username
+        }
+        return rep
     
     def validate_username(self, value):
         user = self.context['request'].user

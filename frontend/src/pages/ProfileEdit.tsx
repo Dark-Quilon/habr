@@ -40,7 +40,7 @@ export default function ProfileEdit() {
         localStorage.setItem('user', JSON.stringify({ 
           ...user, 
           username: data.username || user.username,
-          display_name: updatedProfile.user.display_name 
+          display_name: updatedProfile?.user?.display_name || displayName
         }))
       }
       route('/profile/me')
@@ -55,6 +55,7 @@ export default function ProfileEdit() {
     <div className="container py-4">
       <div className="form-container">
         <h2 className="mb-4">Редактировать профиль</h2>
+        {loading && <div className="alert alert-info">Сохранение...</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label">Имя</label>
