@@ -15,7 +15,7 @@ from blog.models import Profile, Article, Vote, Follow, Tag, Comment, Notificati
 from api.serializers import (
     RegisterSerializer, LoginSerializer,
     ArticleListSerializer, ArticleDetailSerializer, ArticleWriteSerializer,
-    TagSerializer, CommentSerializer, ProfileSerializer, NotificationSerializer,
+    TagSerializer, CommentSerializer, ProfileSerializer, ProfileUpdateSerializer, NotificationSerializer,
     ReportSerializer,
 )
 from api.permissions import IsAuthorOrReadOnly, IsCommentAuthorOrReadOnly
