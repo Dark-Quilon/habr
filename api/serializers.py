@@ -133,8 +133,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
-    display_name = serializers.CharField(source='user.first_name', required=False, allow_blank=True)
-    username = serializers.CharField(source='user.username', required=False)
+    display_name = serializers.CharField(required=False, allow_blank=True)
+    username = serializers.CharField(required=False)
     
     class Meta:
         model = Profile
@@ -147,15 +147,14 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         return value
     
     def update(self, instance, validated_data):
-        user_data = validated_data.pop('user', {})
-        if user_data:
-            username = user_data.get('username')
-            first_name = user_data.get('first_name')
-            if username:
-                instance.user.username = username
-            if first_name is not None:
-                instance.user.first_name = first_name
-            instance.user.save()
+        username = validated_data.get('username')
+        display_name = validated_data.get('display_name')
+        
+        if username:
+            instance.user.username = username
+        if display_name is not None:
+            instance.user.first_name = display_name
+        instance.user.save()
         
         return super().update(instance, validated_data)
 
